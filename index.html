@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Telugu Community – Registration</title>
+<link href="https://fonts.googleapis.com/css2?family=Tiro+Telugu&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet"/>
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<!-- Firebase -->
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+<style>
+  :root {
+    --saffron: #FF6B00;
+    --saffron-light: #FFF0E5;
+    --green: #138808;
+    --green-light: #E8F5E9;
+    --dark: #1A1A1A;
+    --muted: #6B6B6B;
+    --border: #E0E0E0;
+    --white: #FFFFFF;
+    --bg: #FAF8F5;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--dark);
+    min-height: 100vh;
+  }
+
+  /* HEADER */
+  header {
+    background: var(--white);
+    border-bottom: 3px solid var(--saffron);
+    padding: 0 2rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    height: 72px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+  }
+  .logo-mark {
+    width: 46px; height: 46px;
+    background: linear-gradient(135deg, var(--saffron), #FF9800);
+    border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Tiro Telugu', serif;
+    color: white; font-size: 22px; font-weight: bold;
+    flex-shrink: 0;
+  }
+  .site-name { font-size: 1.3rem; font-weight: 600; color: var(--dark); }
+  .site-sub  { font-size: 0.8rem; color: var(--muted); margin-top: 1px; }
+  header nav { margin-left: auto; }
+  header nav a {
+    text-decoration: none;
+    color: var(--muted);
+    font-size: 0.9rem;
+    padding: 6px 14px;
+    border-radius: 8px;
+    transition: background 0.2s;
+  }
+  header nav a:hover { background: var(--saffron-light); color: var(--saffron); }
+
+  /* HERO */
+  .hero {
+    background: linear-gradient(135deg, #FFF8F2 0%, #FFF3E8 50%, #F0FAF0 100%);
+    border-bottom: 1px solid var(--border);
+    padding: 3rem 2rem 2.5rem;
+    text-align: center;
+  }
+  .hero-badge {
+    display: inline-block;
+    background: var(--saffron-light);
+    color: var(--saffron);
+    font-size: 0.8rem;
+    font-weight: 600;
+    padding: 4px 14px;
+    border-radius: 20px;
+    margin-bottom: 1rem;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+  }
+  .hero h1 {
+    font-family: 'Tiro Telugu', serif;
+    font-size: clamp(2rem, 5vw, 3rem);
+    color: var(--dark);
+    line-height: 1.2;
+  }
+  .hero h1 span { color: var(--saffron); }
+  .hero p { color: var(--muted); margin-top: 0.75rem; font-size: 1rem; }
+  .stripe { display: flex; gap: 0; margin: 1.5rem auto 0; width: 80px; border-radius: 4px; overflow: hidden; }
+  .stripe div { height: 5px; flex: 1; }
+  .stripe .s1 { background: #FF6B00; }
+  .stripe .s2 { background: white; }
+  .stripe .s3 { background: #138808; }
+
+  /* MAIN LAYOUT */
+  .container { max-width: 680px; margin: 0 auto; padding: 2rem 1.5rem 4rem; }
+
+  /* PRICING PILLS */
+  .pricing-row {
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px;
+    margin-bottom: 2rem;
+  }
+  .price-pill {
+    background: var(--white); border: 1px solid var(--border);
+    border-radius: 12px; padding: 14px 8px; text-align: center;
+    transition: all 0.2s;
+  }
+  .price-pill .yr { font-size: 0.75rem; color: var(--muted); font-weight: 500; }
+  .price-pill .amt { font-size: 1.3rem; font-weight: 600; color: var(--saffron); margin-top: 2px; }
+  .price-pill.active { border-color: var(--saffron); background: var(--saffron-light); }
+  .price-pill.active .yr { color: var(--saffron); }
+
+  /* FORM CARD */
+  .form-card {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 2rem;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.06);
+  }
+  .form-card h2 {
+    font-size: 1.15rem; font-weight: 600; margin-bottom: 1.5rem;
+    padding-bottom: 1rem; border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; gap: 8px;
+  }
+  .form-card h2 .dot { width: 10px; height: 10px; border-radius: 50%; background: var(--saffron); }
+
+  .field { margin-bottom: 1.25rem; }
+  label { display: block; font-size: 0.85rem; font-weight: 500; color: var(--dark); margin-bottom: 6px; }
+  label span { color: var(--saffron); }
+  input, select {
+    width: 100%; padding: 11px 14px;
+    border: 1.5px solid var(--border); border-radius: 10px;
+    font-family: 'DM Sans', sans-serif; font-size: 0.95rem;
+    color: var(--dark); background: var(--white);
+    transition: border-color 0.2s, box-shadow 0.2s;
+    outline: none;
+    appearance: none; -webkit-appearance: none;
+  }
+  input:focus, select:focus {
+    border-color: var(--saffron);
+    box-shadow: 0 0 0 3px rgba(255,107,0,0.12);
+  }
+  .select-wrap { position: relative; }
+  .select-wrap::after {
+    content: '▾'; position: absolute; right: 14px; top: 50%;
+    transform: translateY(-50%); color: var(--muted); pointer-events: none;
+    font-size: 1rem;
+  }
+
+  /* AMOUNT BOX */
+  .amount-box {
+    background: linear-gradient(135deg, #FFF3E8, #FFF8F2);
+    border: 1.5px solid var(--saffron);
+    border-radius: 12px; padding: 1rem 1.25rem;
+    display: flex; justify-content: space-between; align-items: center;
+    margin: 1.5rem 0;
+  }
+  .amount-box .label { font-size: 0.9rem; color: var(--muted); }
+  .amount-box .value { font-size: 1.6rem; font-weight: 600; color: var(--saffron); }
+  .amount-box .value.hidden { display: none; }
+
+  /* PAY BUTTON */
+  .pay-btn {
+    width: 100%; padding: 14px;
+    background: linear-gradient(135deg, var(--saffron), #FF8C00);
+    color: white; font-family: 'DM Sans', sans-serif;
+    font-size: 1rem; font-weight: 600;
+    border: none; border-radius: 12px; cursor: pointer;
+    transition: transform 0.15s, box-shadow 0.15s;
+    box-shadow: 0 4px 16px rgba(255,107,0,0.35);
+    letter-spacing: 0.3px;
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+  }
+  .pay-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(255,107,0,0.4); }
+  .pay-btn:active { transform: translateY(0); }
+  .pay-btn:disabled { background: #ccc; box-shadow: none; cursor: not-allowed; transform: none; }
+
+  /* INFO NOTE */
+  .info-note {
+    font-size: 0.8rem; color: var(--muted);
+    text-align: center; margin-top: 0.75rem;
+    display: flex; align-items: center; justify-content: center; gap: 5px;
+  }
+
+  /* SUCCESS SCREEN */
+  #success-screen {
+    display: none;
+    text-align: center; padding: 2rem;
+  }
+  .success-icon {
+    width: 80px; height: 80px; border-radius: 50%;
+    background: var(--green-light);
+    display: flex; align-items: center; justify-content: center;
+    margin: 0 auto 1.5rem; font-size: 2.5rem;
+  }
+  #success-screen h2 { font-size: 1.5rem; font-weight: 600; margin-bottom: 0.5rem; color: var(--green); }
+  #success-screen p { color: var(--muted); margin-bottom: 1.5rem; line-height: 1.6; }
+  .whatsapp-btn {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: #25D366; color: white;
+    padding: 12px 24px; border-radius: 12px;
+    text-decoration: none; font-weight: 600; font-size: 0.95rem;
+    box-shadow: 0 4px 14px rgba(37,211,102,0.35);
+    transition: transform 0.15s;
+  }
+  .whatsapp-btn:hover { transform: translateY(-2px); }
+  .invoice-box {
+    background: var(--bg); border: 1px solid var(--border);
+    border-radius: 12px; padding: 1.25rem;
+    margin: 1.5rem 0; text-align: left;
+  }
+  .invoice-box .inv-row {
+    display: flex; justify-content: space-between;
+    padding: 5px 0; font-size: 0.9rem; border-bottom: 1px solid var(--border);
+  }
+  .invoice-box .inv-row:last-child { border-bottom: none; }
+  .invoice-box .inv-row .k { color: var(--muted); }
+  .invoice-box .inv-row .v { font-weight: 500; }
+  .invoice-box .inv-row.total .v { color: var(--saffron); font-size: 1.1rem; font-weight: 600; }
+
+  /* FOOTER */
+  footer {
+    text-align: center; padding: 2rem;
+    border-top: 1px solid var(--border);
+    color: var(--muted); font-size: 0.8rem;
+    background: var(--white);
+  }
+  .flag-stripe { display: flex; height: 3px; }
+  .flag-stripe div { flex: 1; }
+
+  /* Error */
+  .err { color: #E53935; font-size: 0.8rem; margin-top: 4px; display: none; }
+
+  @media(max-width: 480px) {
+    .pricing-row { grid-template-columns: repeat(2, 1fr); }
+    .form-card { padding: 1.25rem; }
+  }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header>
+  <div class="logo-mark">త</div>
+  <div>
+    <div class="site-name">Telugu Community</div>
+    <div class="site-sub">College Registration Portal</div>
+  </div>
+  <nav>
+    <a href="admin.html">Admin ↗</a>
+  </nav>
+</header>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-badge">🎓 Academic Year 2024–25</div>
+  <h1>Join the <span>Telugu</span> Community</h1>
+  <p>Register, pay your membership fee & get your digital invoice instantly on WhatsApp</p>
+  <div class="stripe"><div class="s1"></div><div class="s2"></div><div class="s3"></div></div>
+</div>
+
+<!-- MAIN -->
+<div class="container">
+
+  <!-- PRICING PREVIEW -->
+  <div class="pricing-row" id="pricing-row">
+    <div class="price-pill" data-year="1"><div class="yr">1st Year</div><div class="amt">₹250</div></div>
+    <div class="price-pill" data-year="2"><div class="yr">2nd Year</div><div class="amt">₹300</div></div>
+    <div class="price-pill" data-year="3"><div class="yr">3rd Year</div><div class="amt">₹350</div></div>
+    <div class="price-pill" data-year="4"><div class="yr">4th Year</div><div class="amt">₹400</div></div>
+  </div>
+
+  <!-- FORM -->
+  <div class="form-card" id="form-card">
+    <h2><div class="dot"></div> Member Registration</h2>
+
+    <div class="field">
+      <label>Full Name <span>*</span></label>
+      <input type="text" id="name" placeholder="Enter your full name"/>
+      <div class="err" id="err-name">Please enter your name</div>
+    </div>
+
+    <div class="field">
+      <label>Mobile Number <span>*</span></label>
+      <input type="tel" id="mobile" placeholder="10-digit mobile number" maxlength="10"/>
+      <div class="err" id="err-mobile">Enter valid 10-digit mobile number</div>
+    </div>
+
+    <div class="field">
+      <label>Branch / Department <span>*</span></label>
+      <div class="select-wrap">
+        <select id="branch">
+          <option value="">Select your branch</option>
+          <option>Computer Science & Engineering (CSE)</option>
+          <option>Electronics & Communication (ECE)</option>
+          <option>Electrical Engineering (EEE)</option>
+          <option>Mechanical Engineering (MECH)</option>
+          <option>Civil Engineering (CIVIL)</option>
+          <option>Information Technology (IT)</option>
+          <option>Chemical Engineering</option>
+          <option>Biotechnology</option>
+          <option>Other</option>
+        </select>
+      </div>
+      <div class="err" id="err-branch">Please select your branch</div>
+    </div>
+
+    <div class="field">
+      <label>Graduating Year <span>*</span></label>
+      <div class="select-wrap">
+        <select id="year" onchange="onYearChange(this.value)">
+          <option value="">Select your year</option>
+          <option value="1">1st Year</option>
+          <option value="2">2nd Year</option>
+          <option value="3">3rd Year</option>
+          <option value="4">4th Year</option>
+        </select>
+      </div>
+      <div class="err" id="err-year">Please select your year</div>
+    </div>
+
+    <div class="amount-box" id="amount-box">
+      <div>
+        <div class="label">Membership Fee</div>
+        <div style="font-size:0.78rem;color:#aaa;margin-top:2px;">Select year to see amount</div>
+      </div>
+      <div class="value hidden" id="amount-display"></div>
+    </div>
+
+    <button class="pay-btn" id="pay-btn" onclick="startPayment()">
+      🔒 Pay & Register
+    </button>
+    <div class="info-note">🛡️ Secured by Razorpay &nbsp;|&nbsp; 2% gateway fee included</div>
+  </div>
+
+  <!-- SUCCESS SCREEN -->
+  <div class="form-card" id="success-screen">
+    <div class="success-icon">✅</div>
+    <h2>Payment Successful!</h2>
+    <p>Thank you for registering with Telugu Community.<br/>Your invoice is ready below.</p>
+
+    <div class="invoice-box" id="invoice-box"></div>
+
+    <a class="whatsapp-btn" id="whatsapp-btn" href="#" target="_blank">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+      Send Invoice via WhatsApp
+    </a>
+
+    <p style="margin-top:1.5rem;font-size:0.85rem;color:var(--muted);">
+      ← <a href="#" onclick="resetForm()" style="color:var(--saffron);text-decoration:none;font-weight:500;">Register another member</a>
+    </p>
+  </div>
+
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="flag-stripe"><div style="background:#FF6B00"></div><div style="background:white;border-top:1px solid #eee;border-bottom:1px solid #eee"></div><div style="background:#138808"></div></div>
+  <p style="margin-top:1rem;">© 2024 Telugu Community · All rights reserved</p>
+</footer>
+
+<script>
+// ═══════════════════════════════════════════
+// 🔧 CONFIGURE THESE BEFORE GOING LIVE
+// ═══════════════════════════════════════════
+const CONFIG = {
+  RAZORPAY_KEY: "rzp_test_XXXXXXXXXXXXXXXXXX",  // Replace with your Razorpay Key ID
+  ADMIN_WHATSAPP: "919XXXXXXXXX",               // Replace: 91 + your 10-digit number
+  FIREBASE: {
+    apiKey: "YOUR_API_KEY",
+    authDomain: "YOUR_PROJECT.firebaseapp.com",
+    projectId: "YOUR_PROJECT_ID",
+    storageBucket: "YOUR_PROJECT.appspot.com",
+    messagingSenderId: "YOUR_SENDER_ID",
+    appId: "YOUR_APP_ID"
+  }
+};
+// ═══════════════════════════════════════════
+
+const FEES = { "1": 250, "2": 300, "3": 350, "4": 400 };
+const YEAR_LABELS = { "1": "1st Year", "2": "2nd Year", "3": "3rd Year", "4": "4th Year" };
+let currentData = {};
+
+// Init Firebase
+let db;
+try {
+  firebase.initializeApp(CONFIG.FIREBASE);
+  db = firebase.firestore();
+} catch(e) { console.warn("Firebase not configured yet:", e.message); }
+
+// Year select → update pricing pills + amount box
+function onYearChange(val) {
+  document.querySelectorAll('.price-pill').forEach(p => {
+    p.classList.toggle('active', p.dataset.year === val);
+  });
+  const disp = document.getElementById('amount-display');
+  if (val && FEES[val]) {
+    disp.textContent = '₹' + FEES[val];
+    disp.classList.remove('hidden');
+    document.getElementById('amount-box').querySelector('div > div:last-child').style.display = 'none';
+  } else {
+    disp.classList.add('hidden');
+    document.getElementById('amount-box').querySelector('div > div:last-child').style.display = '';
+  }
+}
+
+// Validation
+function validate() {
+  let ok = true;
+  const name   = document.getElementById('name').value.trim();
+  const mobile = document.getElementById('mobile').value.trim();
+  const branch = document.getElementById('branch').value;
+  const year   = document.getElementById('year').value;
+
+  const show = (id, cond) => {
+    document.getElementById(id).style.display = cond ? 'block' : 'none';
+    return cond;
+  };
+
+  if (show('err-name',   !name))   ok = false;
+  if (show('err-mobile', !/^\d{10}$/.test(mobile))) ok = false;
+  if (show('err-branch', !branch)) ok = false;
+  if (show('err-year',   !year))   ok = false;
+
+  return ok ? { name, mobile, branch, year } : null;
+}
+
+// Start Razorpay payment
+function startPayment() {
+  const data = validate();
+  if (!data) return;
+
+  const amount = FEES[data.year];
+  const options = {
+    key: CONFIG.RAZORPAY_KEY,
+    amount: amount * 100,          // paise
+    currency: "INR",
+    name: "Telugu Community",
+    description: `${YEAR_LABELS[data.year]} Membership`,
+    image: "",
+    prefill: { name: data.name, contact: data.mobile },
+    theme: { color: "#FF6B00" },
+    handler: function(response) {
+      onPaymentSuccess(data, amount, response.razorpay_payment_id);
+    },
+    modal: {
+      ondismiss: function() { console.log("Payment closed"); }
+    }
+  };
+
+  const rzp = new Razorpay(options);
+  rzp.open();
+}
+
+// After successful payment
+async function onPaymentSuccess(data, amount, paymentId) {
+  const txnId = paymentId || ("TXN" + Date.now());
+  const now = new Date();
+  const dateStr = now.toLocaleDateString('en-IN', { day:'2-digit', month:'short', year:'numeric' });
+  const timeStr = now.toLocaleTimeString('en-IN', { hour:'2-digit', minute:'2-digit' });
+
+  currentData = { ...data, amount, txnId, dateStr, timeStr };
+
+  // Save to Firebase
+  if (db) {
+    try {
+      await db.collection("registrations").add({
+        name: data.name,
+        mobile: data.mobile,
+        branch: data.branch,
+        year: YEAR_LABELS[data.year],
+        amount,
+        txnId,
+        paidAt: firebase.firestore.FieldValue.serverTimestamp(),
+        status: "paid"
+      });
+      // Notify admin via WhatsApp
+      notifyAdmin(data, amount, txnId, dateStr);
+    } catch(e) { console.error("Firebase error:", e); }
+  }
+
+  showSuccess();
+}
+
+// Show success + invoice
+function showSuccess() {
+  document.getElementById('form-card').style.display = 'none';
+  const s = document.getElementById('success-screen');
+  s.style.display = 'block';
+
+  const { name, mobile, branch, year, amount, txnId, dateStr, timeStr } = currentData;
+  document.getElementById('invoice-box').innerHTML = `
+    <div class="inv-row"><span class="k">Member Name</span><span class="v">${name}</span></div>
+    <div class="inv-row"><span class="k">Mobile</span><span class="v">${mobile}</span></div>
+    <div class="inv-row"><span class="k">Branch</span><span class="v">${branch}</span></div>
+    <div class="inv-row"><span class="k">Year</span><span class="v">${YEAR_LABELS[year]}</span></div>
+    <div class="inv-row"><span class="k">Payment Date</span><span class="v">${dateStr}, ${timeStr}</span></div>
+    <div class="inv-row"><span class="k">Transaction ID</span><span class="v" style="font-size:0.8rem">${txnId}</span></div>
+    <div class="inv-row total"><span class="k">Amount Paid</span><span class="v">₹${amount}</span></div>
+  `;
+
+  const msg = encodeURIComponent(
+`✅ *Telugu Community – Payment Confirmed!*
+━━━━━━━━━━━━━━━━━━
+👤 *Name:* ${name}
+📱 *Mobile:* ${mobile}
+🏫 *Branch:* ${branch}
+📚 *Year:* ${YEAR_LABELS[year]}
+💰 *Amount Paid:* ₹${amount}
+🗓️ *Date:* ${dateStr} at ${timeStr}
+🔖 *Txn ID:* ${txnId}
+━━━━━━━━━━━━━━━━━━
+Welcome to Telugu Community! 🙏🎉`
+  );
+
+  document.getElementById('whatsapp-btn').href =
+    `https://wa.me/${mobile.replace(/\D/,'')}?text=${msg}`;
+}
+
+// Notify admin on WhatsApp
+function notifyAdmin(data, amount, txnId, dateStr) {
+  const msg = encodeURIComponent(
+`🔔 *New Registration – Telugu Community*
+👤 ${data.name} | ${YEAR_LABELS[data.year]}
+📱 ${data.mobile}
+🏫 ${data.branch}
+💰 ₹${amount} | Txn: ${txnId}
+🗓️ ${dateStr}`
+  );
+  // Open silently (you can also send via Twilio backend if needed)
+  const link = `https://wa.me/${CONFIG.ADMIN_WHATSAPP}?text=${msg}`;
+  window.open(link, '_blank');
+}
+
+// Reset form
+function resetForm() {
+  document.getElementById('form-card').style.display = 'block';
+  document.getElementById('success-screen').style.display = 'none';
+  document.getElementById('name').value = '';
+  document.getElementById('mobile').value = '';
+  document.getElementById('branch').value = '';
+  document.getElementById('year').value = '';
+  document.getElementById('amount-display').classList.add('hidden');
+  document.querySelectorAll('.price-pill').forEach(p => p.classList.remove('active'));
+  currentData = {};
+}
+</script>
+</body>
+</html>
