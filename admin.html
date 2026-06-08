@@ -4,8 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cineo Operations - Master Control Center</title>
+    <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Premium Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -21,14 +24,17 @@
 </head>
 <body class="antialiased text-slate-800 bg-slate-50">
 
+    <!-- TOAST NOTIFICATION CONTAINER ZONE -->
     <div id="toast-container" class="fixed top-6 right-6 z-[300] flex flex-col gap-3 max-w-sm w-full pointer-events-none"></div>
 
+    <!-- GLOBAL LOADING SPINNER SCREEN OVERLAY -->
     <div id="global-spinner" class="fixed inset-0 z-[250] bg-slate-900/40 backdrop-blur-sm flex items-center justify-center hidden">
         <div class="bg-white p-5 rounded-2xl shadow-xl flex items-center gap-3 font-semibold text-sm">
             <i class="fa-solid fa-circle-notch animate-spin text-blue-600 text-xl"></i> Processing Cloud Matrix Sync...
         </div>
     </div>
 
+    <!-- CONFIRMATION DIALOG MODAL LAYOUT -->
     <div id="confirm-modal" class="fixed inset-0 z-[220] bg-slate-950/50 backdrop-blur-sm hidden flex items-center justify-center p-4">
         <div class="bg-white w-full max-w-sm rounded-2xl p-6 shadow-2xl border border-slate-100 space-y-4">
             <div class="w-12 h-12 bg-rose-50 text-rose-600 rounded-full flex items-center justify-center text-xl"><i class="fa-solid fa-triangle-exclamation"></i></div>
@@ -43,22 +49,35 @@
         </div>
     </div>
 
+    <!-- HARDCODED USERNAME & PASSWORD ADMIN GATEWAY WINDOW -->
     <div id="gate-modal" class="fixed inset-0 z-[200] bg-slate-900 flex items-center justify-center p-4">
-        <div id="gate-card-auth" class="bg-white w-full max-w-md rounded-3xl p-8 text-center space-y-6 shadow-2xl border border-slate-800">
-            <div class="w-16 h-16 rounded-2xl bg-blue-600 text-white flex items-center justify-center text-2xl mx-auto shadow-lg shadow-blue-500/20"><i class="fa-solid fa-shield-halved"></i></div>
-            <div class="space-y-1">
-                <h2 class="text-2xl font-black tracking-tight text-slate-900">CINEO Backstage</h2>
-                <p class="text-xs text-slate-400">Authorized administrative security validation protocol required.</p>
+        <div class="bg-white w-full max-w-md rounded-3xl p-8 shadow-2xl border border-slate-200 space-y-6">
+            <div class="w-16 h-16 rounded-2xl bg-blue-600 text-white flex items-center justify-center text-2xl mx-auto shadow-lg shadow-blue-500/20"><i class="fa-solid fa-lock-keyhole"></i></div>
+            <div class="text-center space-y-1">
+                <h2 class="text-2xl font-black tracking-tight text-slate-900">Cineo Network Portal</h2>
+                <p class="text-xs text-slate-400">Provide root management operational passkeys.</p>
             </div>
-            <button id="gate-signin-btn" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold text-sm py-3.5 px-4 rounded-xl flex items-center justify-center gap-3 shadow-md shadow-blue-500/10 transition-all active:scale-95">
-                <i class="fa-brands fa-google text-lg"></i> Sign In with Admin Account
-            </button>
-            <p id="gate-error-log" class="text-xs font-bold text-rose-500 hidden bg-rose-50 p-3 rounded-xl border border-rose-100"></p>
+            <form id="admin-login-form" class="space-y-4 text-xs font-semibold">
+                <div class="space-y-1.5">
+                    <label class="text-slate-600">Admin User ID</label>
+                    <input type="text" id="login-username" required placeholder="Enter User ID" class="w-full border p-3 rounded-xl bg-slate-50 outline-none focus:bg-white focus:ring-1 focus:ring-blue-500 font-medium">
+                </div>
+                <div class="space-y-1.5">
+                    <label class="text-slate-600">Secure Access Password</label>
+                    <input type="password" id="login-password" required placeholder="Enter Password" class="w-full border p-3 rounded-xl bg-slate-50 outline-none focus:bg-white focus:ring-1 focus:ring-blue-500 font-medium">
+                </div>
+                <p id="gate-error-log" class="text-xs font-bold text-rose-500 hidden bg-rose-50 p-3 rounded-xl border border-rose-100"></p>
+                <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold text-sm py-3.5 px-4 rounded-xl shadow-md transition-all active:scale-95">
+                    Authorize Security Node
+                </button>
+            </form>
         </div>
     </div>
 
+    <!-- MAIN DASHBOARD CONTENT AREA -->
     <div id="workspace" class="hidden min-h-screen flex flex-col md:flex-row">
         
+        <!-- SIDEBAR CONTAINER DESKTOP/MOBILE FLUID LAYOUT -->
         <aside class="w-full md:w-64 bg-white border-r border-slate-200 flex flex-col flex-shrink-0 z-40">
             <div class="p-5 border-b border-slate-100 flex items-center justify-between">
                 <div class="flex items-center gap-2.5">
@@ -75,24 +94,27 @@
                 <button onclick="switchViewSection('watchlists')" id="link-watchlists" class="sidebar-link w-full text-left px-5 py-3.5 flex items-center gap-3 transition-all hover:bg-slate-50"><i class="fa-solid fa-heart text-sm"></i> Watchlists Auditing</button>
                 <button onclick="switchViewSection('settings')" id="link-settings" class="sidebar-link w-full text-left px-5 py-3.5 flex items-center gap-3 transition-all hover:bg-slate-50"><i class="fa-solid fa-sliders text-sm"></i> Portal Settings</button>
                 <div class="pt-8 px-5 mt-auto border-t border-slate-100">
-                    <button id="gate-signout-btn" class="w-full bg-slate-100 hover:bg-rose-50 hover:text-rose-600 text-slate-600 text-center py-2.5 rounded-xl transition-all">Sign Out Center</button>
+                    <button onclick="executeSignoutSequence()" class="w-full bg-slate-100 hover:bg-rose-50 hover:text-rose-600 text-slate-600 text-center py-2.5 rounded-xl transition-all">Sign Out Center</button>
                 </div>
             </div>
         </aside>
 
+        <!-- VIEW WRAPPER -->
         <main class="flex-1 overflow-x-hidden p-4 sm:p-8 max-w-7xl w-full mx-auto space-y-6">
             
+            <!-- GLOBAL REUSABLE TITLE ACCENT HEADER BAR -->
             <header class="flex items-center justify-between border-b border-slate-200 pb-4">
                 <div>
                     <h1 id="view-title" class="text-xl sm:text-2xl font-black text-slate-900 tracking-tight">Cineo Dashboard</h1>
                     <p id="view-subtitle" class="text-xs text-slate-400 mt-0.5">Real-time infrastructure system overview monitor.</p>
                 </div>
                 <div class="text-right hidden sm:block">
-                    <p id="workspace-user-name" class="text-xs font-bold text-slate-700"></p>
+                    <p class="text-xs font-bold text-slate-700">Root Network Admin</p>
                     <span class="text-[10px] bg-emerald-100 text-emerald-800 font-extrabold px-2 py-0.5 rounded-md uppercase">Superadmin Authorized</span>
                 </div>
             </header>
 
+            <!-- ================= VIEW 1: OPERATIONAL CENTER (DASHBOARD) ================= -->
             <section id="view-section-dashboard" class="view-panel space-y-6 hidden">
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                     <div class="glass-card rounded-2xl p-4 flex items-center justify-between shadow-sm">
@@ -122,10 +144,10 @@
                 </div>
             </section>
 
+            <!-- ================= VIEW 2: MANAGE MOVIES SECTION ================= -->
             <section id="view-section-movies" class="view-panel space-y-6 hidden">
                 <div class="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm space-y-4">
                     <h3 class="text-xs uppercase font-extrabold tracking-wider text-slate-400 border-b pb-2 flex items-center gap-2"><i class="fa-solid fa-square-plus text-blue-500"></i> Inject / Update Movie Database Object</h3>
-                    
                     <form id="movie-form" class="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
                         <input type="hidden" id="movie-id">
                         <div class="space-y-1"><label class="font-bold text-slate-600">Movie Title</label><input type="text" id="movie-title" required class="w-full border p-2.5 rounded-xl bg-slate-50 outline-none focus:bg-white focus:ring-1 focus:ring-blue-500 transition-colors"></div>
@@ -161,7 +183,6 @@
                             <select id="movie-sort-key" class="bg-white border rounded-xl py-2 px-3 shadow-sm outline-none"><option value="title_asc">Title (A-Z)</option><option value="title_desc">Title (Z-A)</option><option value="year_desc">Year (Newest)</option><option value="year_asc">Year (Oldest)</option></select>
                         </div>
                     </div>
-                    
                     <div class="overflow-x-auto w-full">
                         <table class="w-full text-left text-xs border-collapse">
                             <thead>
@@ -178,7 +199,6 @@
                             <tbody id="movie-table-body" class="divide-y divide-slate-100 font-medium text-slate-700"></tbody>
                         </table>
                     </div>
-
                     <div class="p-4 border-t bg-slate-50/30 flex items-center justify-between text-xs font-bold text-slate-500">
                         <span id="movie-pagination-info">Showing index records...</span>
                         <div class="flex items-center gap-1.5">
@@ -189,6 +209,7 @@
                 </div>
             </section>
 
+            <!-- ================= VIEW 3: CAROUSEL PROMO BANNERS SECTION ================= -->
             <section id="view-section-banners" class="view-panel space-y-6 hidden">
                 <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
                     <div class="lg:col-span-1 bg-white border border-slate-200 rounded-2xl p-5 shadow-sm space-y-4 max-h-[420px]">
@@ -205,7 +226,6 @@
                             </div>
                         </form>
                     </div>
-
                     <div class="lg:col-span-2 bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-sm">
                         <div class="overflow-x-auto w-full">
                             <table class="w-full text-left text-xs border-collapse">
@@ -225,6 +245,7 @@
                 </div>
             </section>
 
+            <!-- ================= VIEW 4: BASE USER MATRIX AUDITING ================= -->
             <section id="view-section-users" class="view-panel space-y-6 hidden">
                 <div class="bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-sm flex flex-col">
                     <div class="p-4 bg-slate-50/50 border-b flex items-center justify-between text-xs">
@@ -246,6 +267,7 @@
                 </div>
             </section>
 
+            <!-- ================= VIEW 5: WATCHLIST AUDITING LEDGER ================= -->
             <section id="view-section-watchlists" class="view-panel space-y-6 hidden">
                 <div class="bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-sm">
                     <div class="overflow-x-auto w-full">
@@ -262,6 +284,7 @@
                 </div>
             </section>
 
+            <!-- ================= VIEW 6: PORTAL SETTINGS RECONFIGURATOR ================= -->
             <section id="view-section-settings" class="view-panel space-y-6 hidden">
                 <div class="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm max-w-xl space-y-4">
                     <h3 class="text-xs uppercase font-extrabold tracking-wider text-slate-400 border-b pb-2"><i class="fa-solid fa-sliders text-blue-500"></i> Global Dynamic Site Attributes</h3>
@@ -273,16 +296,14 @@
                     </form>
                 </div>
             </section>
-
         </main>
     </div>
 
+    <!-- FIREBASE PLATFORM SCRIPT CONNECTIONS LAYER MODULE -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getAuth, signInWithPopup, GoogleAuthProvider, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
         import { getFirestore, doc, setDoc, deleteDoc, collection, onSnapshot, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-        // Firebase Configuration Credentials
         const firebaseConfig = {
             apiKey: "AIzaSyANrrHFyhq3dLpgBPamM0wF8lFa7ENd6oA",
             authDomain: "cineo-medianetwork.firebaseapp.com",
@@ -294,102 +315,77 @@
         };
 
         const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
         const db = getFirestore(app);
-        const provider = new GoogleAuthProvider();
 
-        // RUNTIME COMPILER INVENTORY CONTAINER ARRAYS
         let moviesCache = [];
         let bannersCache = [];
         let usersCache = [];
         let watchlistsCache = [];
         let globalSettingsObj = null;
 
-        // DATA FILTER STATE METRICS FOR PAGINATION OPERATIONS
         let movieSearchQuery = "";
         let movieFilterGenre = "all";
         let movieSortKey = "title_asc";
         let movieCurrentPage = 1;
         const moviePageSize = 5;
-
         let userSearchQuery = "";
-
-        // CONFIRMATION CAPTURE OBJECT DEFINITION FOR DELETIONS
         let pendingDeletionExecutionCallback = null;
 
-        // APPLICATION OPERATION SECURE LIFECYCLES
         document.addEventListener("DOMContentLoaded", () => {
-            document.getElementById("gate-signin-btn").onclick = handleGateLoginSequence;
-            document.getElementById("gate-signout-btn").onclick = handleSignoutSequence;
-            
-            // Core Form Submissions
+            document.getElementById("admin-login-form").onsubmit = executeCredentialVerificationChallenge;
             document.getElementById("movie-form").onsubmit = processMovieFormSubmission;
             document.getElementById("banner-form").onsubmit = processBannerFormSubmission;
             document.getElementById("settings-form").onsubmit = processSettingsFormSubmission;
 
-            // Matrix Listeners Filters Linking Hooks
+            // Filters Linking Hooks
             document.getElementById("movie-search").oninput = (e) => { movieSearchQuery = e.target.value; movieCurrentPage = 1; evaluateMoviesPipelineDisplay(); };
             document.getElementById("movie-filter-genre").onchange = (e) => { movieFilterGenre = e.target.value; movieCurrentPage = 1; evaluateMoviesPipelineDisplay(); };
             document.getElementById("movie-sort-key").onchange = (e) => { movieSortKey = e.target.value; evaluateMoviesPipelineDisplay(); };
             document.getElementById("movie-prev-btn").onclick = () => { if(movieCurrentPage > 1) { movieCurrentPage--; evaluateMoviesPipelineDisplay(); } };
             document.getElementById("movie-next-btn").onclick = () => { if((movieCurrentPage * moviePageSize) < getFilteredMoviesList().length) { movieCurrentPage++; evaluateMoviesPipelineDisplay(); } };
-
             document.getElementById("user-search").oninput = (e) => { userSearchQuery = e.target.value; evaluateUsersPipelineDisplay(); };
-
-            // Modal Interlocks Target Buttons Binding
             document.getElementById("confirm-yes-btn").onclick = () => { if(pendingDeletionExecutionCallback) { pendingDeletionExecutionCallback(); closeConfirmationModal(); } };
 
-            // Initialize Security Authentication State Monitor Node
-            onAuthStateChanged(auth, manageSystemGateInterceptor);
+            // Check if login token exists in memory session cache tracking parameters
+            if (sessionStorage.getItem("cineo_admin_session") === "authorized") {
+                renderDashboardWorkspaceLayout();
+            }
         });
 
-        // AUTH SECURITY SECURITY INTERCEPTOR MATRIX LAYER
-        async function manageSystemGateInterceptor(user) {
-            const gate = document.getElementById("gate-modal");
-            const errorElement = document.getElementById("gate-error-log");
+        // SECURE PASSKEY VALIDATION MODULE SYSTEM
+        function executeCredentialVerificationChallenge(e) {
+            e.preventDefault();
+            const userField = document.getElementById("login-username").value.trim();
+            const passField = document.getElementById("login-password").value;
+            const errBox = document.getElementById("gate-error-log");
 
-            if (user) {
-                toggleGlobalProcessingSpinner(true);
-                try {
-                    const cleanEmail = user.email.toLowerCase().trim();
-                    const checkSnapshot = await getDoc(doc(db, "admins", cleanEmail));
-
-                    if (checkSnapshot.exists()) {
-                        gate.classList.add("hidden");
-                        document.getElementById("workspace").classList.remove("hidden");
-                        document.getElementById("workspace-user-name").innerText = user.displayName;
-                        
-                        // Seed Real-Time Data Streams Downstream
-                        launchRealTimeSyncEngines();
-                        switchViewSection("dashboard");
-                    } else {
-                        errorElement.innerText = `Access Denied: Email account (${user.email}) is unauthorized.`;
-                        errorElement.classList.remove("hidden");
-                        await signOut(auth);
-                    }
-                } catch(err) {
-                    errorElement.innerText = "Error establishing verification handshakes with database rules.";
-                    errorElement.classList.remove("hidden");
-                } finally {
-                    toggleGlobalProcessingSpinner(false);
-                }
+            if (userField === "adminnetwork" && passField === "Naveenkumar@!23") {
+                sessionStorage.setItem("cineo_admin_session", "authorized");
+                errBox.classList.add("hidden");
+                renderDashboardWorkspaceLayout();
+                dispatchToast("Admin authorization token validated.");
             } else {
-                gate.classList.remove("hidden");
-                document.getElementById("workspace").classList.add("hidden");
+                errBox.innerText = "Invalid credentials. Core node authorization denied.";
+                errBox.classList.remove("hidden");
             }
         }
 
-        async function handleGateLoginSequence() {
-            document.getElementById("gate-error-log").classList.add("hidden");
-            try { await signInWithPopup(auth, provider); } catch(err) { dispatchToast("Authorization aborted or network timing dead negative.", "error"); }
+        function renderDashboardWorkspaceLayout() {
+            document.getElementById("gate-modal").classList.add("hidden");
+            document.getElementById("workspace").classList.remove("hidden");
+            launchRealTimeSyncEngines();
+            switchViewSection("dashboard");
         }
-        async function handleSignoutSequence() {
-            try { await signOut(auth); dispatchToast("Session dropped securely.", "info"); } catch(err) { }
+
+        window.executeSignoutSequence = function() {
+            sessionStorage.removeItem("cineo_admin_session");
+            document.getElementById("workspace").classList.add("hidden");
+            document.getElementById("gate-modal").classList.remove("hidden");
+            document.getElementById("admin-login-form").reset();
         }
 
         // METRICS COUNTER AND ON-SNAPSHOT STREAM HOOK SYNCHRONIZERS
         function launchRealTimeSyncEngines() {
-            // Settings Collection Monitor
             onSnapshot(doc(db, "settings", "global"), (docSnap) => {
                 if(docSnap.exists()) {
                     globalSettingsObj = docSnap.data();
@@ -400,7 +396,6 @@
                 }
             });
 
-            // Movies Synchronizer
             onSnapshot(collection(db, "movies"), (snapshot) => {
                 moviesCache = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
                 document.getElementById("card-count-movies").innerText = moviesCache.length;
@@ -408,21 +403,18 @@
                 evaluateMoviesPipelineDisplay();
             });
 
-            // Banners Synchronizer
             onSnapshot(collection(db, "banners"), (snapshot) => {
                 bannersCache = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
                 document.getElementById("card-count-banners").innerText = bannersCache.length;
                 evaluateBannersPipelineDisplay();
             });
 
-            // Users Synchronizer
             onSnapshot(collection(db, "users"), (snapshot) => {
                 usersCache = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
                 document.getElementById("card-count-users").innerText = usersCache.length;
                 evaluateUsersPipelineDisplay();
             });
 
-            // Watchlists Synchronizer
             onSnapshot(collection(db, "watchlists"), (snapshot) => {
                 watchlistsCache = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
                 document.getElementById("card-count-watchlists").innerText = watchlistsCache.length;
@@ -430,7 +422,6 @@
             });
         }
 
-        // MOVIE DATA MUTATION DISPATCH ACTIONS PIPELINES
         async function processMovieFormSubmission(e) {
             e.preventDefault();
             toggleGlobalProcessingSpinner(true);
@@ -451,10 +442,10 @@
                     latestRelease: document.getElementById("movie-is-latest").checked
                 }, { merge: true });
 
-                dispatchToast("Movie record successfully written to database infrastructure.");
+                dispatchToast("Movie record written successfully.");
                 clearMovieForm();
             } catch(err) {
-                dispatchToast("Error pushing assets to firestore endpoints.", "error");
+                dispatchToast("Error pushing assets.", "error");
             } finally {
                 toggleGlobalProcessingSpinner(false);
             }
@@ -477,8 +468,6 @@
         function evaluateMoviesPipelineDisplay() {
             const tbody = document.getElementById("movie-table-body");
             const matches = getFilteredMoviesList();
-
-            // Slicing window matrix bounds tracking pagination variables
             const startIndex = (movieCurrentPage - 1) * moviePageSize;
             const paginatedItems = matches.slice(startIndex, startIndex + moviePageSize);
 
@@ -487,7 +476,7 @@
             document.getElementById("movie-next-btn").disabled = ((movieCurrentPage * moviePageSize) >= matches.length);
 
             if(paginatedItems.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="7" class="p-8 text-center text-slate-400 italic">No corresponding inventory matches returned.</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="7" class="p-8 text-center text-slate-400 italic">No inventory matches found.</td></tr>`;
                 return;
             }
 
@@ -525,28 +514,20 @@
             document.getElementById("movie-banner").value = m.bannerUrl || "";
             document.getElementById("movie-url").value = m.movieUrl || "";
             document.getElementById("movie-rating").value = m.rating || "";
-            
             document.getElementById("movie-is-trending").checked = !!m.trending;
             document.getElementById("movie-is-featured").checked = !!m.featured;
             document.getElementById("movie-is-latest").checked = !!m.latestRelease;
 
             document.getElementById("movie-submit-btn").innerText = "Update Movie Asset";
             document.getElementById("movie-form").parentElement.scrollIntoView({ behavior: "smooth" });
-            dispatchToast("Asset parameters loaded into dashboard context.", "info");
         }
 
         function hydrateGenreDropdownFilterControl() {
             const selectNode = document.getElementById("movie-filter-genre");
             const currentSelected = selectNode.value;
             const distinctiveGenres = new Set();
-            
-            moviesCache.forEach(m => {
-                if(m.genre) m.genre.split(',').forEach(g => distinctiveGenres.add(g.trim()));
-            });
-
-            selectNode.innerHTML = `<option value="all">All Genres</option>` + Array.from(distinctiveGenres).map(g => `
-                <option value="${g.toLowerCase()}">${g}</option>
-            `).join('');
+            moviesCache.forEach(m => { if(m.genre) m.genre.split(',').forEach(g => distinctiveGenres.add(g.trim())); });
+            selectNode.innerHTML = `<option value="all">All Genres</option>` + Array.from(distinctiveGenres).map(g => `<option value="${g.toLowerCase()}">${g}</option>`).join('');
             selectNode.value = currentSelected;
         }
 
@@ -556,12 +537,10 @@
             document.getElementById("movie-submit-btn").innerText = "Save Movie Asset";
         }
 
-        // BANNERS PROMO MANAGERS
         async function processBannerFormSubmission(e) {
             e.preventDefault();
             toggleGlobalProcessingSpinner(true);
             const targetId = document.getElementById("banner-id").value || `banner_${Date.now()}`;
-
             try {
                 await setDoc(doc(db, "banners", targetId), {
                     title: document.getElementById("banner-title").value.trim(),
@@ -569,11 +548,10 @@
                     description: document.getElementById("banner-desc").value.trim(),
                     active: document.getElementById("banner-is-active").checked
                 }, { merge: true });
-
-                dispatchToast("Promo slide operational settings committed.");
+                dispatchToast("Promo slide settings committed.");
                 clearBannerForm();
             } catch(err) {
-                dispatchToast("Failed execution tracking on banners schema.", "error");
+                dispatchToast("Failed banner sync.", "error");
             } finally {
                 toggleGlobalProcessingSpinner(false);
             }
@@ -582,10 +560,9 @@
         function evaluateBannersPipelineDisplay() {
             const tbody = document.getElementById("banner-table-body");
             if(bannersCache.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="5" class="p-6 text-center text-slate-400 italic">No promo slider items mapped in Firestore.</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="5" class="p-6 text-center text-slate-400 italic">No banners mapped.</td></tr>`;
                 return;
             }
-
             tbody.innerHTML = bannersCache.map(b => `
                 <tr class="hover:bg-slate-50 transition-colors">
                     <td class="p-4"><img src="${b.bannerImageUrl}" class="w-20 h-10 object-cover rounded border shadow-sm"></td>
@@ -594,13 +571,12 @@
                     <td class="p-4 text-sm">${b.active ? '<span class="text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded text-[10px] font-extrabold uppercase">Live</span>' : '<span class="text-slate-400 bg-slate-100 px-2 py-0.5 rounded text-[10px] font-extrabold uppercase">Disabled</span>'}</td>
                     <td class="p-4">
                         <div class="flex items-center justify-center gap-1.5">
-                            <button class="edit-b-trig bg-slate-100 hover:bg-indigo-50 hover:text-indigo-600 px-2 py-1 rounded-lg font-bold" data-id="${b.id}"><i class="fa-solid fa-pencil"></i></button>
-                            <button class="del-b-trig bg-slate-100 hover:bg-rose-50 hover:text-rose-600 px-2 py-1 rounded-lg font-bold" data-id="${b.id}"><i class="fa-solid fa-trash-can"></i></button>
+                            <button class="edit-b-trig bg-slate-100 text-indigo-600 px-2 py-1 rounded-lg font-bold" data-id="${b.id}"><i class="fa-solid fa-pencil"></i></button>
+                            <button class="del-b-trig bg-slate-100 text-rose-600 px-2 py-1 rounded-lg font-bold" data-id="${b.id}"><i class="fa-solid fa-trash-can"></i></button>
                         </div>
                     </td>
                 </tr>
             `).join('');
-
             tbody.querySelectorAll(".edit-b-trig").forEach(btn => btn.onclick = () => populateBannerFormFields(btn.dataset.id));
             tbody.querySelectorAll(".del-b-trig").forEach(btn => btn.onclick = () => openConfirmationModal(() => deleteDoc(doc(db, "banners", btn.dataset.id))));
         }
@@ -608,15 +584,12 @@
         function populateBannerFormFields(id) {
             const b = bannersCache.find(item => item.id === id);
             if(!b) return;
-
             document.getElementById("banner-id").value = b.id;
             document.getElementById("banner-title").value = b.title || "";
             document.getElementById("banner-url").value = b.bannerImageUrl || "";
             document.getElementById("banner-desc").value = b.description || "";
             document.getElementById("banner-is-active").checked = !!b.active;
-
             document.getElementById("banner-submit-btn").innerText = "Update Slide Node";
-            dispatchToast("Slider content contextualized into form controls.", "info");
         }
 
         window.clearBannerForm = function() {
@@ -625,25 +598,22 @@
             document.getElementById("banner-submit-btn").innerText = "Save Slide Node";
         }
 
-        // DATA VIEW DRIVERS FOR AUDITING DOMAINS (USERS / WATCHLISTS)
         function evaluateUsersPipelineDisplay() {
             const tbody = document.getElementById("user-table-body");
             const filteredUsers = usersCache.filter(u => 
                 (u.name && u.name.toLowerCase().includes(userSearchQuery.toLowerCase())) ||
                 (u.email && u.email.toLowerCase().includes(userSearchQuery.toLowerCase()))
             );
-
             if(filteredUsers.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="4" class="p-8 text-center text-slate-400 italic">No authenticated consumer instances tracked matching parameter.</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="4" class="p-8 text-center text-slate-400 italic">No consumer records found.</td></tr>`;
                 return;
             }
-
             tbody.innerHTML = filteredUsers.map(u => {
                 const dateObj = u.lastLogin ? u.lastLogin.toDate().toLocaleDateString('en-IN', {dateStyle: 'medium'}) : 'N/A';
                 return `
                     <tr class="hover:bg-slate-50 transition-colors">
                         <td class="p-4"><img src="${u.photo || 'https://api.dicebear.com/7.x/initials/svg?seed=' + u.name}" class="w-8 h-8 rounded-xl border object-cover"></td>
-                        <td class="p-4 font-bold text-slate-900">${u.name || 'Anonymous Watching'}</td>
+                        <td class="p-4 font-bold text-slate-900">${u.name || 'Anonymous User'}</td>
                         <td class="p-4 font-mono text-slate-500 text-[11px]">${u.email}</td>
                         <td class="p-4 text-slate-400 font-semibold">${dateObj}</td>
                     </tr>
@@ -654,115 +624,74 @@
         function evaluateWatchlistsPipelineDisplay() {
             const tbody = document.getElementById("watchlist-table-body");
             if(watchlistsCache.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="2" class="p-6 text-center text-slate-400 italic">No consumer watchlists synchronized. Database index clean.</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="2" class="p-6 text-center text-slate-400 italic">No active watchlists found.</td></tr>`;
                 return;
             }
-
             tbody.innerHTML = watchlistsCache.map(w => {
-                const itemsCount = (w.movieIds) ? w.movieIds.length : 0;
                 return `
                     <tr class="hover:bg-slate-50 font-medium">
-                        <td class="p-4 font-mono text-blue-600 tracking-tight text-[11px]">${w.id}</td>
+                        <td class="p-4 font-mono text-blue-600 text-[11px]">${w.id}</td>
                         <td class="p-4">
-                            <div class="flex items-center gap-2">
-                                <span class="bg-pink-50 text-pink-700 font-extrabold px-2 py-0.5 rounded-md text-[11px]">${itemsCount} Cached Movie IDs</span>
-                                <span class="text-slate-300 text-[10px] truncate max-w-sm font-mono">(${w.movieIds ? w.movieIds.join(', ') : 'Empty'})</span>
-                            </div>
+                            <span class="bg-pink-50 text-pink-700 font-extrabold px-2 py-0.5 rounded-md text-[11px]">${w.movieIds ? w.movieIds.length : 0} Items</span>
+                            <span class="text-slate-300 text-[10px] font-mono ml-2">(${w.movieIds ? w.movieIds.join(', ') : 'None'})</span>
                         </td>
                     </tr>
                 `;
             }).join('');
         }
 
-        // GLOBAL PORTAL PARAMETERS RECONFIGURATOR
         async function processSettingsFormSubmission(e) {
             e.preventDefault();
             toggleGlobalProcessingSpinner(true);
-
             try {
                 await setDoc(doc(db, "settings", "global"), {
                     siteName: document.getElementById("settings-site-name").value.trim(),
                     logoUrl: document.getElementById("settings-logo-url").value.trim(),
                     heroSubtitle: document.getElementById("settings-hero-subtitle").value.trim()
                 }, { merge: true });
-
                 dispatchToast("Dynamic global site configurations updated.");
             } catch(err) {
-                dispatchToast("Aborted: Rules error writing settings configurations.", "error");
+                dispatchToast("Rules error writing to Firestore.", "error");
             } finally {
                 toggleGlobalProcessingSpinner(false);
             }
         }
 
-        // INTERFACE COMPONENT LAYER NAVIGATION DISPATCH CONTROLLERS
         window.switchViewSection = function(sectionKey) {
             document.querySelectorAll(".view-panel").forEach(p => p.classList.add("hidden"));
             document.querySelectorAll(".sidebar-link").forEach(l => l.classList.remove("active"));
-
             const targetSection = document.getElementById(`view-section-${sectionKey}`);
             const targetLink = document.getElementById(`link-${sectionKey}`);
-            
             if(targetSection) targetSection.classList.remove("hidden");
             if(targetLink) targetLink.classList.add("active");
 
-            // Dynamic header labels re-injection mapping arrays
             const headersMap = {
-                dashboard: ["Operational Center", "Real-time infrastructure system overview monitor."],
-                movies: ["Manage Movies Catalog", "Inject, refine, and compile your system movie assets."],
-                banners: ["Carousel Promotion Banners", "Update background promotional assets."],
-                users: ["User Matrix Directory", "Review and audit profiles registered on Cineo."],
-                watchlists: ["Watchlists Auditing Ledger", "Track custom customer bookmark logs directly."],
-                settings: ["Portal Scope Settings", "Adjust site name titles and tagline configurations."]
+                dashboard: ["Operational Center", "Real-time infrastructure system monitor."],
+                movies: ["Manage Movies Catalog", "Inject, refine, and compile your movie assets."],
+                banners: ["Carousel Promotion Banners", "Update sliding promotion visuals."],
+                users: ["User Matrix Directory", "Review and audit consumer profiles registered on Cineo."],
+                watchlists: ["Watchlists Auditing Ledger", "Track client bookmark maps directly."],
+                settings: ["Portal Scope Settings", "Adjust site configuration titles and taglines."]
             };
-
             if(headersMap[sectionKey]) {
                 document.getElementById("view-title").innerText = headersMap[sectionKey][0];
                 document.getElementById("view-subtitle").innerText = headersMap[sectionKey][1];
             }
-            
-            // Auto hide mobile overlay shelf drawers if popped open
-            if(window.innerWidth < 768) {
-                document.getElementById('sidebar-links-box').classList.add('hidden');
-            }
+            if(window.innerWidth < 768) { document.getElementById('sidebar-links-box').classList.add('hidden'); }
         }
 
-        // MODAL DIALOGS INTERLOCK CONTROLLERS
-        function openConfirmationModal(callbackFn) {
-            pendingDeletionExecutionCallback = callbackFn;
-            document.getElementById("confirm-modal").classList.remove("hidden");
-        }
-        window.closeConfirmationModal = function() {
-            pendingDeletionExecutionCallback = null;
-            document.getElementById("confirm-modal").classList.add("hidden");
-        }
+        function openConfirmationModal(callbackFn) { pendingDeletionExecutionCallback = callbackFn; document.getElementById("confirm-modal").classList.remove("hidden"); }
+        window.closeConfirmationModal = function() { pendingDeletionExecutionCallback = null; document.getElementById("confirm-modal").classList.add("hidden"); }
+        function toggleGlobalProcessingSpinner(show) { const spinner = document.getElementById("global-spinner"); if(show) spinner.classList.remove("hidden"); else spinner.classList.add("hidden"); }
 
-        function toggleGlobalProcessingSpinner(show) {
-            const spinner = document.getElementById("global-spinner");
-            if(show) spinner.classList.remove("hidden");
-            else spinner.classList.add("hidden");
-        }
-
-        // DYNAMIC PRODUCTION NOTIFICATION ALERTS TOAST HOOK ENGINE
         function dispatchToast(msg, variant = "success") {
             const wrapper = document.getElementById("toast-container");
-            if(!wrapper) return;
-
             const el = document.createElement("div");
-            el.className = "p-4 bg-white/95 backdrop-blur shadow-xl border rounded-2xl flex items-center gap-3 transition-all duration-300 transform translate-x-12 opacity-0 pointer-events-auto select-none";
-            
-            let icon = `<i class="fa-solid fa-circle-check text-emerald-500"></i>`;
-            if (variant === "info") { icon = `<i class="fa-solid fa-circle-info text-blue-500"></i>`; el.classList.add("border-blue-100"); }
-            else if (variant === "error") { icon = `<i class="fa-solid fa-circle-exclamation text-rose-500"></i>`; el.classList.add("border-rose-100"); }
-            else { el.classList.add("border-emerald-100"); }
-
-            el.innerHTML = `<div>${icon}</div><p class="text-xs font-bold text-slate-700 flex-1">${msg}</p>`;
+            el.className = "p-4 bg-white/95 shadow-xl border rounded-2xl flex items-center gap-3 transition-all duration-300 transform translate-x-12 opacity-0 font-medium text-xs";
+            el.innerHTML = `<p class="text-slate-700">${msg}</p>`;
             wrapper.appendChild(el);
-
             setTimeout(() => el.classList.remove("translate-x-12", "opacity-0"), 10);
-            setTimeout(() => {
-                el.classList.add("translate-x-12", "opacity-0");
-                setTimeout(() => el.remove(), 300);
-            }, 4000);
+            setTimeout(() => { el.classList.add("opacity-0"); setTimeout(() => el.remove(), 300); }, 4000);
         }
     </script>
 </body>
