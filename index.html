@@ -11,7 +11,7 @@
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght=300;400;500;600;700;800&display=swap" rel="stylesheet">
 
     <script>
         tailwind.config = {
@@ -36,7 +36,7 @@
         ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-        .glass-panel { background: rgba(255, 255, 255, 0.75); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.5); }
+        .glass-panel { background: rgba(255, 255, 255, 0.75); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.5); }
         .hero-slide { opacity: 0; transition: opacity 1s ease-in-out, transform 1s ease-in-out; transform: scale(1.01); pointer-events: none; }
         .hero-slide.active { opacity: 1; transform: scale(1); pointer-events: auto; }
         .movie-card { transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
@@ -46,6 +46,26 @@
 <body class="font-sans antialiased text-slate-800 bg-slate-50/50">
 
     <div id="toast-container" class="fixed top-24 right-6 z-[100] flex flex-col gap-3 max-w-md w-full pointer-events-none"></div>
+
+    <!-- MANDATORY CLIENT LOGIN BLOCK OVERLAY -->
+    <div id="mandatory-auth-gate" class="fixed inset-0 z-[150] bg-slate-950/80 backdrop-blur-xl flex items-center justify-center p-4 hidden">
+        <div class="bg-white w-full max-w-sm rounded-3xl p-8 text-center space-y-5 shadow-2xl">
+            <div class="w-14 h-14 bg-brand-50 text-brand-600 rounded-2xl flex items-center justify-center text-xl mx-auto shadow-inner"><i class="fa-solid fa-user-astronaut"></i></div>
+            <div class="space-y-1">
+                <h3 class="text-xl font-black text-slate-900">Sign in to Cineo</h3>
+                <p class="text-xs text-slate-400">Stream Trending & Telugu movies in pristine quality.</p>
+            </div>
+            <button id="gate-login-btn" class="w-full bg-slate-900 hover:bg-black text-white font-bold text-xs py-3.5 px-4 rounded-xl flex items-center justify-center gap-3 transition-all">
+                <svg class="w-4 h-4" viewBox="0 0 24 24">
+                    <path fill="#4285F4" d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v3.92h6.61c-.29 1.53-1.14 2.82-2.4 3.68v3.05h3.88c2.27-2.09 3.66-5.17 3.66-8.58z"/>
+                    <path fill="#34A853" d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3.05c-1.08.72-2.45 1.16-4.05 1.16-3.11 0-5.74-2.11-6.68-4.96H1.21v3.15C3.18 21.88 7.31 24 12 24z"/>
+                    <path fill="#FBBC05" d="M5.32 14.24c-.24-.72-.38-1.49-.38-2.24s.14-1.52.38-2.24V6.61H1.21C.44 8.15 0 9.88 0 11.72s.44 3.57 1.21 5.11l4.11-3.15z"/>
+                    <path fill="#EA4335" d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.31 0 3.18 2.12 1.21 5.76l4.11 3.15c.94-2.85 3.57-4.96 6.68-4.96z"/>
+                </svg>
+                <span>Continue with Google Account</span>
+            </button>
+        </div>
+    </div>
 
     <!-- NAVBAR LAYER -->
     <nav id="navbar" class="fixed top-0 left-0 w-full z-50 glass-panel shadow-sm transition-all duration-300 px-4 lg:px-12 py-4 flex items-center justify-between">
@@ -72,9 +92,6 @@
             </div>
 
             <div id="auth-zone">
-                <button id="login-btn" class="flex items-center gap-2 bg-gradient-to-r from-brand-600 to-brand-500 text-white font-semibold text-xs px-4 py-2.5 rounded-xl shadow-md">
-                    <i class="fa-solid fa-right-to-bracket"></i> Sign In
-                </button>
                 <div id="profile-menu" class="hidden flex items-center gap-3 cursor-pointer relative" onclick="document.getElementById('profile-dropdown').classList.toggle('hidden')">
                     <img id="user-avatar" src="" alt="Avatar" class="w-9 h-9 rounded-xl border-2 border-brand-500 object-cover shadow-sm">
                     <div id="profile-dropdown" class="hidden absolute top-12 right-0 w-48 bg-white rounded-xl shadow-xl border border-slate-100 py-1.5 flex flex-col z-50">
@@ -89,16 +106,13 @@
     <header class="relative w-full h-[50vh] sm:h-[75vh] bg-slate-900 mt-[76px] overflow-hidden">
         <div class="absolute inset-0 bg-gradient-to-t from-slate-50 via-slate-900/30 to-transparent z-10 pointer-events-none"></div>
         <div class="absolute inset-0 bg-gradient-to-r from-slate-950/70 via-transparent to-transparent z-10 pointer-events-none"></div>
-        <div id="hero-slider-container" class="w-full h-full relative">
-            <div class="absolute inset-0 flex items-center justify-center text-slate-400 text-xs">Waiting for cinematic assets...</div>
-        </div>
+        <div id="hero-slider-container" class="w-full h-full relative"></div>
         <div class="absolute bottom-6 right-12 z-20 flex items-center gap-2" id="hero-carousel-dots"></div>
     </header>
 
     <!-- CONTAINER BLOCK -->
     <main class="relative z-20 px-4 lg:px-12 pb-24 -mt-12 sm:-mt-20 space-y-12">
-        
-        <!-- CONTINUE WATCHING ROW -->
+        <!-- CONTINUE WATCHING -->
         <section id="continue-section" class="hidden">
             <div class="flex items-center gap-2 mb-4"><div class="w-1 h-5 bg-amber-500 rounded-full"></div><h2 class="text-lg font-extrabold tracking-tight">Continue Watching</h2></div>
             <div id="continue-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4"></div>
@@ -110,22 +124,20 @@
             <div id="watchlist-shelf" class="flex items-center gap-5 overflow-x-auto py-2 no-scrollbar scroll-smooth"></div>
         </section>
 
-        <!-- ROW 1: TRENDING NOW -->
+        <!-- TRENDING NOW -->
         <section id="trending-section" class="hidden space-y-4">
-            <div class="flex items-center justify-between">
-                <div class="flex items-center gap-2"><div class="w-1 h-5 bg-brand-600 rounded-full"></div><h3 class="text-lg font-extrabold tracking-tight">Trending Now</h3></div>
-            </div>
+            <div class="flex items-center gap-2"><div class="w-1 h-5 bg-brand-600 rounded-full"></div><h3 class="text-lg font-extrabold tracking-tight">Trending Now</h3></div>
             <div id="trending-shelf" class="flex items-center gap-5 overflow-x-auto py-2 no-scrollbar scroll-smooth"></div>
         </section>
 
-        <!-- ROW 2: TELUGU MOVIES -->
+        <!-- TELUGU MOVIES -->
         <section id="telugu-section" class="hidden space-y-4">
             <div class="flex items-center gap-2"><div class="w-1 h-5 bg-cyan-500 rounded-full"></div><h3 class="text-lg font-extrabold tracking-tight">Telugu Movies</h3></div>
             <div id="telugu-shelf" class="flex items-center gap-5 overflow-x-auto py-2 no-scrollbar scroll-smooth"></div>
         </section>
     </main>
 
-    <!-- MOVIE METADATA DETAIL DISPLAY MODAL -->
+    <!-- DETAILS MODAL -->
     <div id="details-modal" class="fixed inset-0 z-[70] bg-slate-950/80 backdrop-blur-md hidden flex items-center justify-center p-4">
         <div class="bg-white w-full max-w-3xl rounded-2xl shadow-2xl overflow-hidden relative max-h-[90vh] flex flex-col">
             <button onclick="toggleDetailsModal(false)" class="absolute top-4 right-4 z-30 w-8 h-8 rounded-full bg-slate-950/70 text-white flex items-center justify-center"><i class="fa-solid fa-xmark text-xs"></i></button>
@@ -135,11 +147,9 @@
                     <img id="modal-banner" src="" class="w-full h-full object-cover">
                 </div>
                 <div class="p-6 grid grid-cols-1 md:grid-cols-3 gap-6">
-                    <div class="hidden md:block">
-                        <img id="modal-poster" src="" class="w-full h-60 object-cover rounded-xl shadow-md border">
-                    </div>
+                    <div class="hidden md:block"><img id="modal-poster" src="" class="w-full h-60 object-cover rounded-xl shadow-md border"></div>
                     <div class="md:col-span-2 space-y-4">
-                        <h2 id="modal-title" class="text-2xl font-black tracking-tight text-slate-950"></h2>
+                        <h2 id="modal-title" class="text-2xl font-black text-slate-950"></h2>
                         <div class="flex flex-wrap gap-2 text-[11px] font-bold">
                             <span id="modal-year" class="bg-slate-100 text-slate-600 px-2 py-0.5 rounded"></span>
                             <span id="modal-genre" class="bg-brand-50 text-brand-700 px-2 py-0.5 rounded"></span>
@@ -155,7 +165,7 @@
         </div>
     </div>
 
-    <!-- STREAM STAGE FULLSCREEN OVERLAY MODAL -->
+    <!-- VIDEO PLAYER MODAL -->
     <div id="player-modal" class="fixed inset-0 z-[110] bg-black hidden flex flex-col">
         <div class="absolute top-0 left-0 w-full p-4 bg-gradient-to-b from-black/80 to-transparent z-50 flex items-center justify-between text-white">
             <span id="player-title" class="text-sm font-bold tracking-tight"></span>
@@ -164,13 +174,12 @@
         <div class="flex-1 w-full h-full flex items-center justify-center" id="player-view-node"></div>
     </div>
 
-    <!-- SYSTEM LAYER ROUTING CODES -->
+    <!-- CONTROLLER LOGIC MATRIX MODULE -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getAuth, signInWithPopup, GoogleAuthProvider, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-        import { getFirestore, doc, setDoc, getDoc, collection, onSnapshot, query, where } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getFirestore, doc, setDoc, getDoc, collection, onSnapshot } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-        // Integrated client configurations
         const firebaseConfig = {
             apiKey: "AIzaSyANrrHFyhq3dLpgBPamM0wF8lFa7ENd6oA",
             authDomain: "cineo-medianetwork.firebaseapp.com",
@@ -193,13 +202,33 @@
         let heroCarouselTimer = null;
 
         document.addEventListener("DOMContentLoaded", () => {
-            initRealTimeSynchronizers();
             initSearchEngine();
             hydrateContinueWatchingUI();
-            
-            document.getElementById("login-btn").onclick = executeProfileAuthentication;
+            document.getElementById("gate-login-btn").onclick = executeProfileAuthentication;
             document.getElementById("logout-btn").onclick = executeProfileSignout;
+            onAuthStateChanged(auth, evaluateUserMandatorySessionGate);
         });
+
+        // ENFORCED GATE VALIDATOR
+        function evaluateUserMandatorySessionGate(user) {
+            const gate = document.getElementById("mandatory-auth-gate");
+            if (user) {
+                activeUser = user;
+                gate.classList.add("hidden");
+                document.getElementById("profile-menu").classList.remove("hidden");
+                document.getElementById("user-avatar").src = user.photoURL;
+                
+                syncUserProfileToFirestore(user);
+                initRealTimeSynchronizers();
+                initWatchlistRealTimeSync(user.uid);
+            } else {
+                activeUser = null;
+                gate.classList.remove("hidden");
+                document.getElementById("profile-menu").classList.add("hidden");
+                document.getElementById("watchlist-section").classList.add("hidden");
+                document.getElementById("nav-watchlist-link").classList.add("hidden");
+            }
+        }
 
         function initRealTimeSynchronizers() {
             onSnapshot(collection(db, "movies"), (snapshot) => {
@@ -211,23 +240,6 @@
             onSnapshot(collection(db, "banners"), (snapshot) => {
                 masterBanners = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
                 renderHeroCarousel();
-            });
-
-            onAuthStateChanged(auth, (user) => {
-                if (user) {
-                    activeUser = user;
-                    document.getElementById("login-btn").classList.add("hidden");
-                    document.getElementById("profile-menu").classList.remove("hidden");
-                    document.getElementById("user-avatar").src = user.photoURL;
-                    syncUserProfileToFirestore(user);
-                    initWatchlistRealTimeSync(user.uid);
-                } else {
-                    activeUser = null;
-                    document.getElementById("login-btn").classList.remove("hidden");
-                    document.getElementById("profile-menu").classList.add("hidden");
-                    document.getElementById("watchlist-section").classList.add("hidden");
-                    document.getElementById("nav-watchlist-link").classList.add("hidden");
-                }
             });
         }
 
@@ -246,36 +258,25 @@
                 if (docSnap.exists() && activeUser) {
                     const listIds = docSnap.data().movieIds || [];
                     const filteredMovies = masterMovies.filter(m => listIds.includes(m.id));
-                    
                     if(filteredMovies.length > 0) {
                         document.getElementById("watchlist-section").classList.remove("hidden");
                         document.getElementById("nav-watchlist-link").classList.remove("hidden");
                         injectMovieCards(filteredMovies, "watchlist-shelf");
-                    } else {
-                        document.getElementById("watchlist-section").classList.add("hidden");
-                    }
-                } else {
-                    document.getElementById("watchlist-section").classList.add("hidden");
-                }
+                    } else { document.getElementById("watchlist-section").classList.add("hidden"); }
+                } else { document.getElementById("watchlist-section").classList.add("hidden"); }
             });
         }
 
         function renderShelvesPipeline() {
             const trending = masterMovies.filter(m => m.trending === true || m.trending === "true");
-            const teluguAll = [...masterMovies]; // Lists all elements in database catalog natively
-
             evaluateShelfVisibility(trending, "trending-section", "trending-shelf");
-            evaluateShelfVisibility(teluguAll, "telugu-section", "telugu-shelf");
+            evaluateShelfVisibility([...masterMovies], "telugu-section", "telugu-shelf");
         }
 
         function evaluateShelfVisibility(arr, sectionId, shelfId) {
             const block = document.getElementById(sectionId);
-            if(arr.length > 0) {
-                block.classList.remove("hidden");
-                injectMovieCards(arr, shelfId);
-            } else {
-                block.classList.add("hidden");
-            }
+            if(arr.length > 0) { block.classList.remove("hidden"); injectMovieCards(arr, shelfId); } 
+            else { block.classList.add("hidden"); }
         }
 
         function injectMovieCards(list, targetShelfId) {
@@ -283,9 +284,7 @@
             if (!shelf) return;
             shelf.innerHTML = list.map(movie => `
                 <div class="movie-card flex-shrink-0 w-36 sm:w-48 bg-white rounded-xl overflow-hidden border border-slate-200/60 cursor-pointer shadow-sm relative" data-id="${movie.id}">
-                    <div class="w-full h-48 sm:h-64 relative bg-slate-100">
-                        <img src="${movie.posterUrl}" class="w-full h-full object-cover" loading="lazy">
-                    </div>
+                    <div class="w-full h-48 sm:h-64 relative bg-slate-100"><img src="${movie.posterUrl}" class="w-full h-full object-cover" loading="lazy"></div>
                     <div class="p-2.5 bg-white space-y-0.5">
                         <h4 class="text-xs font-bold text-slate-800 truncate">${movie.title}</h4>
                         <div class="flex items-center justify-between text-[10px] text-slate-400 font-bold">
@@ -295,17 +294,13 @@
                     </div>
                 </div>
             `).join('');
-
-            shelf.querySelectorAll('.movie-card').forEach(card => {
-                card.onclick = () => openMovieDetailsSequence(card.dataset.id);
-            });
+            shelf.querySelectorAll('.movie-card').forEach(card => card.onclick = () => openMovieDetailsSequence(card.dataset.id));
         }
 
         function renderHeroCarousel() {
             const container = document.getElementById("hero-slider-container");
             const dots = document.getElementById("hero-carousel-dots");
             if (!container || masterBanners.length === 0) return;
-
             clearInterval(heroCarouselTimer);
 
             container.innerHTML = masterBanners.map((banner, index) => `
@@ -318,10 +313,7 @@
                 </div>
             `).join('');
 
-            dots.innerHTML = masterBanners.map((_, i) => `
-                <button class="w-2 h-2 rounded-full bg-white/40 transition-all ${i === 0 ? 'bg-brand-500 w-5' : ''}" data-idx="${i}"></button>
-            `).join('');
-
+            dots.innerHTML = masterBanners.map((_, i) => `<button class="w-2 h-2 rounded-full bg-white/40 transition-all ${i === 0 ? 'bg-brand-500 w-5' : ''}" data-idx="${i}"></button>`).join('');
             activeHeroIndex = 0;
             if(masterBanners.length > 1) {
                 heroCarouselTimer = setInterval(() => {
@@ -330,9 +322,7 @@
                     if(!slides[activeHeroIndex]) return;
                     slides[activeHeroIndex].classList.remove('active');
                     indicators[activeHeroIndex].classList.remove('bg-brand-500', 'w-5');
-                    
                     activeHeroIndex = (activeHeroIndex + 1) % slides.length;
-                    
                     slides[activeHeroIndex].classList.add('active');
                     indicators[activeHeroIndex].classList.add('bg-brand-500', 'w-5');
                 }, 5000);
@@ -350,106 +340,66 @@
             document.getElementById("modal-genre").innerText = movie.genre;
             document.getElementById("modal-desc").innerText = movie.description;
 
-            const playBtn = document.getElementById("modal-play-btn");
-            playBtn.onclick = () => {
-                toggleDetailsModal(false);
-                executeStreamInstantiation(movie);
-            };
-
+            document.getElementById("modal-play-btn").onclick = () => { toggleDetailsModal(false); executeStreamInstantiation(movie); };
             const watchlistBtn = document.getElementById("modal-watchlist-btn");
-            if (activeUser) {
-                watchlistBtn.classList.remove("hidden");
-                const docSnap = await getDoc(doc(db, "watchlists", activeUser.uid));
-                const currentIds = (docSnap.exists()) ? (docSnap.data().movieIds || []) : [];
-                
-                if (currentIds.includes(movieId)) {
-                    watchlistBtn.innerHTML = `<i class="fa-solid fa-check text-emerald-500"></i> In Watchlist`;
-                    watchlistBtn.onclick = () => mutateWatchlistAction(movieId, "remove");
-                } else {
-                    watchlistBtn.innerHTML = `<i class="fa-solid fa-plus"></i> Watchlist`;
-                    watchlistBtn.onclick = () => mutateWatchlistAction(movieId, "add");
-                }
+            const docSnap = await getDoc(doc(db, "watchlists", activeUser.uid));
+            const currentIds = (docSnap.exists()) ? (docSnap.data().movieIds || []) : [];
+            
+            if (currentIds.includes(movieId)) {
+                watchlistBtn.innerHTML = `<i class="fa-solid fa-check text-emerald-500"></i> In Watchlist`;
+                watchlistBtn.onclick = () => mutateWatchlistAction(movieId, "remove");
             } else {
-                watchlistBtn.classList.add("hidden");
+                watchlistBtn.innerHTML = `<i class="fa-solid fa-plus"></i> Watchlist`;
+                watchlistBtn.onclick = () => mutateWatchlistAction(movieId, "add");
             }
-
             toggleDetailsModal(true);
         }
 
         async function mutateWatchlistAction(movieId, method) {
-            if (!activeUser) return;
             const docRef = doc(db, "watchlists", activeUser.uid);
             const docSnap = await getDoc(docRef);
             let currentIds = (docSnap.exists()) ? (docSnap.data().movieIds || []) : [];
-
-            if (method === "add" && !currentIds.includes(movieId)) {
-                currentIds.push(movieId);
-                dispatchToast("Added to internal watchlist.");
-            } else if (method === "remove") {
-                currentIds = currentIds.filter(id => id !== movieId);
-                dispatchToast("Removed from watchlist.");
-            }
-
+            if (method === "add" && !currentIds.includes(movieId)) { currentIds.push(movieId); } 
+            else if (method === "remove") { currentIds = currentIds.filter(id => id !== movieId); }
             await setDoc(docRef, { movieIds: currentIds }, { merge: true });
             openMovieDetailsSequence(movieId);
-        }
-
-        function toggleDetailsModal(show) {
-            const modal = document.getElementById("details-modal");
-            if(show) modal.classList.remove("hidden");
-            else modal.classList.add("hidden");
         }
 
         function executeStreamInstantiation(movie) {
             document.getElementById("player-title").innerText = movie.title;
             const playerNode = document.getElementById("player-view-node");
             const url = movie.movieUrl;
-
             localStorage.setItem("cineo_resume_node", JSON.stringify({ id: movie.id, timestamp: Date.now() }));
             hydrateContinueWatchingUI();
 
             if (url.includes("youtube.com/embed") || url.includes("player.vimeo")) {
                 playerNode.innerHTML = `<iframe src="${url}?autoplay=1" class="w-full h-full max-w-4xl aspect-video" allowfullscreen allow="autoplay"></iframe>`;
             } else if (url.endsWith(".m3u8")) {
-                playerNode.innerHTML = `
-                    <video id="hls-video" controls autoplay class="w-full h-full max-w-4xl aspect-video bg-zinc-900"></video>
-                    <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"><\/script>
-                `;
+                playerNode.innerHTML = `<video id="hls-video" controls autoplay class="w-full h-full max-w-4xl aspect-video bg-zinc-900"></video><script src="https://cdn.jsdelivr.net/npm/hls.js@latest"><\/script>`;
                 setTimeout(() => {
                     const video = document.getElementById('hls-video');
-                    if (window.Hls && Hls.isSupported()) {
-                        const hls = new Hls(); hls.loadSource(url); hls.attachMedia(video);
-                    } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
-                        video.src = url;
-                    }
+                    if (window.Hls && Hls.isSupported()) { const hls = new Hls(); hls.loadSource(url); hls.attachMedia(video); } 
+                    else if (video.canPlayType('application/vnd.apple.mpegurl')) { video.src = url; }
                 }, 200);
-            } else {
-                playerNode.innerHTML = `<video src="${url}" controls autoplay class="w-full h-full max-w-4xl aspect-video"></video>`;
-            }
-
+            } else { playerNode.innerHTML = `<video src="${url}" controls autoplay class="w-full h-full max-w-4xl aspect-video"></video>`; }
             document.getElementById("player-modal").classList.remove("hidden");
         }
 
-        window.terminatePlayerStream = function() {
-            document.getElementById("player-modal").classList.add("hidden");
-            document.getElementById("player-view-node").innerHTML = "";
-        }
+        window.terminatePlayerStream = function() { document.getElementById("player-modal").classList.add("hidden"); document.getElementById("player-view-node").innerHTML = ""; }
+        function toggleDetailsModal(show) { const modal = document.getElementById("details-modal"); if(show) modal.classList.remove("hidden"); else modal.classList.add("hidden"); }
 
         function hydrateContinueWatchingUI() {
             const parent = document.getElementById("continue-section");
             const grid = document.getElementById("continue-grid");
             const cache = localStorage.getItem("cineo_resume_node");
-
             if (!cache || masterMovies.length === 0) { parent.classList.add("hidden"); return; }
             const { id } = JSON.parse(cache);
             const target = masterMovies.find(m => m.id === id);
-
             if (!target) { parent.classList.add("hidden"); return; }
-
             parent.classList.remove("hidden");
             grid.innerHTML = `
                 <div class="bg-white border p-3 rounded-xl flex items-center gap-3 shadow-sm hover:border-brand-400 cursor-pointer" onclick="openMovieDetailsSequence('${target.id}')">
-                    <img src="${target.posterUrl}" class="w-10 h-14 object-cover rounded shadow-inner flex-shrink-0">
+                    <img src="${target.posterUrl}" class="w-10 h-14 object-cover rounded shadow flex-shrink-0">
                     <div class="min-w-0 flex-1">
                         <span class="text-[9px] uppercase font-bold text-amber-600 block"><i class="fa-solid fa-bolt animate-pulse"></i> Resume Playback</span>
                         <h4 class="text-xs font-bold text-slate-800 truncate">${target.title}</h4>
@@ -463,9 +413,7 @@
             input.oninput = (e) => {
                 const val = e.target.value.toLowerCase().trim();
                 if(!val) { renderShelvesPipeline(); return; }
-
                 const searchMatches = masterMovies.filter(m => m.title.toLowerCase().includes(val) || m.genre.toLowerCase().includes(val));
-                
                 document.getElementById("trending-section").classList.add("hidden");
                 document.getElementById("telugu-section").classList.remove("hidden");
                 document.querySelector("#telugu-section h3").innerText = `Search Output Index (${searchMatches.length})`;
@@ -473,23 +421,8 @@
             };
         }
 
-        async function executeProfileAuthentication() {
-            try { await signInWithPopup(auth, provider); } catch (e) { dispatchToast("Authentication error occurred.", "error"); }
-        }
-        async function executeProfileSignout() {
-            try { await signOut(auth); } catch (e) { }
-        }
-
-        function dispatchToast(msg) {
-            const box = document.getElementById("toast-container");
-            const node = document.createElement("div");
-            node.className = "p-3 bg-white border text-xs font-bold rounded-xl shadow-lg transition-all duration-300 transform translate-x-6 opacity-0";
-            node.innerText = msg;
-            box.appendChild(node);
-            setTimeout(() => node.classList.remove("translate-x-6", "opacity-0"), 10);
-            setTimeout(() => { node.classList.add("opacity-0"); setTimeout(() => node.remove(), 300); }, 3000);
-        }
-
+        async function executeProfileAuthentication() { try { await signInWithPopup(auth, provider); } catch (e) { } }
+        async function executeProfileSignout() { try { await signOut(auth); } catch (e) { } }
         window.toggleDetailsModal = toggleDetailsModal;
     </script>
 </body>
