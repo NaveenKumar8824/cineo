@@ -4,8 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cineo - Your Telugu Cinema Universe</title>
+    <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Premium Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
@@ -44,6 +47,7 @@
 
     <div id="toast-container" class="fixed top-24 right-6 z-[100] flex flex-col gap-3 max-w-md w-full pointer-events-none"></div>
 
+    <!-- NAVBAR LAYER -->
     <nav id="navbar" class="fixed top-0 left-0 w-full z-50 glass-panel shadow-sm transition-all duration-300 px-4 lg:px-12 py-4 flex items-center justify-between">
         <div class="flex items-center gap-8">
             <a href="#" class="flex items-center gap-2 group">
@@ -55,9 +59,8 @@
             </a>
             <div class="hidden lg:flex items-center gap-6 text-sm font-semibold text-slate-600">
                 <a href="#" class="text-brand-600">Home</a>
-                <a href="#trending-section" class="hover:text-brand-600">Trending</a>
-                <a href="#latest-section" class="hover:text-brand-600">Latest Releases</a>
-                <a href="#top-section" class="hover:text-brand-600">Top Telugu</a>
+                <a href="#trending-section" class="hover:text-brand-600">Trending Now</a>
+                <a href="#telugu-section" class="hover:text-brand-600">Telugu Movies</a>
                 <a href="#watchlist-section" id="nav-watchlist-link" class="hidden hover:text-brand-600">My Watchlist</a>
             </div>
         </div>
@@ -82,6 +85,7 @@
         </div>
     </nav>
 
+    <!-- CAROUSEL TOP FRAME -->
     <header class="relative w-full h-[50vh] sm:h-[75vh] bg-slate-900 mt-[76px] overflow-hidden">
         <div class="absolute inset-0 bg-gradient-to-t from-slate-50 via-slate-900/30 to-transparent z-10 pointer-events-none"></div>
         <div class="absolute inset-0 bg-gradient-to-r from-slate-950/70 via-transparent to-transparent z-10 pointer-events-none"></div>
@@ -91,18 +95,22 @@
         <div class="absolute bottom-6 right-12 z-20 flex items-center gap-2" id="hero-carousel-dots"></div>
     </header>
 
+    <!-- CONTAINER BLOCK -->
     <main class="relative z-20 px-4 lg:px-12 pb-24 -mt-12 sm:-mt-20 space-y-12">
         
+        <!-- CONTINUE WATCHING ROW -->
         <section id="continue-section" class="hidden">
             <div class="flex items-center gap-2 mb-4"><div class="w-1 h-5 bg-amber-500 rounded-full"></div><h2 class="text-lg font-extrabold tracking-tight">Continue Watching</h2></div>
             <div id="continue-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4"></div>
         </section>
 
+        <!-- WATCHLIST ROW -->
         <section id="watchlist-section" class="hidden">
             <div class="flex items-center gap-2 mb-4"><div class="w-1 h-5 bg-rose-500 rounded-full"></div><h2 class="text-lg font-extrabold tracking-tight">My Watchlist</h2></div>
             <div id="watchlist-shelf" class="flex items-center gap-5 overflow-x-auto py-2 no-scrollbar scroll-smooth"></div>
         </section>
 
+        <!-- ROW 1: TRENDING NOW -->
         <section id="trending-section" class="hidden space-y-4">
             <div class="flex items-center justify-between">
                 <div class="flex items-center gap-2"><div class="w-1 h-5 bg-brand-600 rounded-full"></div><h3 class="text-lg font-extrabold tracking-tight">Trending Now</h3></div>
@@ -110,17 +118,14 @@
             <div id="trending-shelf" class="flex items-center gap-5 overflow-x-auto py-2 no-scrollbar scroll-smooth"></div>
         </section>
 
-        <section id="latest-section" class="hidden space-y-4">
-            <div class="flex items-center gap-2"><div class="w-1 h-5 bg-cyan-50 rounded-full"></div><h3 class="text-lg font-extrabold tracking-tight">Latest Releases</h3></div>
-            <div id="latest-shelf" class="flex items-center gap-5 overflow-x-auto py-2 no-scrollbar scroll-smooth"></div>
-        </section>
-
-        <section id="top-section" class="hidden space-y-4">
-            <div class="flex items-center gap-2"><div class="w-1 h-5 bg-indigo-600 rounded-full"></div><h3 class="text-lg font-extrabold tracking-tight">Top Telugu Movies</h3></div>
-            <div id="top-shelf" class="flex items-center gap-5 overflow-x-auto py-2 no-scrollbar scroll-smooth"></div>
+        <!-- ROW 2: TELUGU MOVIES -->
+        <section id="telugu-section" class="hidden space-y-4">
+            <div class="flex items-center gap-2"><div class="w-1 h-5 bg-cyan-500 rounded-full"></div><h3 class="text-lg font-extrabold tracking-tight">Telugu Movies</h3></div>
+            <div id="telugu-shelf" class="flex items-center gap-5 overflow-x-auto py-2 no-scrollbar scroll-smooth"></div>
         </section>
     </main>
 
+    <!-- MOVIE METADATA DETAIL DISPLAY MODAL -->
     <div id="details-modal" class="fixed inset-0 z-[70] bg-slate-950/80 backdrop-blur-md hidden flex items-center justify-center p-4">
         <div class="bg-white w-full max-w-3xl rounded-2xl shadow-2xl overflow-hidden relative max-h-[90vh] flex flex-col">
             <button onclick="toggleDetailsModal(false)" class="absolute top-4 right-4 z-30 w-8 h-8 rounded-full bg-slate-950/70 text-white flex items-center justify-center"><i class="fa-solid fa-xmark text-xs"></i></button>
@@ -150,6 +155,7 @@
         </div>
     </div>
 
+    <!-- STREAM STAGE FULLSCREEN OVERLAY MODAL -->
     <div id="player-modal" class="fixed inset-0 z-[110] bg-black hidden flex flex-col">
         <div class="absolute top-0 left-0 w-full p-4 bg-gradient-to-b from-black/80 to-transparent z-50 flex items-center justify-between text-white">
             <span id="player-title" class="text-sm font-bold tracking-tight"></span>
@@ -158,19 +164,21 @@
         <div class="flex-1 w-full h-full flex items-center justify-center" id="player-view-node"></div>
     </div>
 
+    <!-- SYSTEM LAYER ROUTING CODES -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getAuth, signInWithPopup, GoogleAuthProvider, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
         import { getFirestore, doc, setDoc, getDoc, collection, onSnapshot, query, where } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-        // IMPORTANT: Insert your actual configuration matrix credentials block here
+        // Integrated client configurations
         const firebaseConfig = {
-            apiKey: "YOUR_API_KEY",
-            authDomain: "YOUR_AUTH_DOMAIN",
-            projectId: "YOUR_PROJECT_ID",
-            storageBucket: "YOUR_STORAGE_BUCKET",
-            messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
-            appId: "YOUR_APP_ID"
+            apiKey: "AIzaSyANrrHFyhq3dLpgBPamM0wF8lFa7ENd6oA",
+            authDomain: "cineo-medianetwork.firebaseapp.com",
+            projectId: "cineo-medianetwork",
+            storageBucket: "cineo-medianetwork.firebasestorage.app",
+            messagingSenderId: "151543950614",
+            appId: "1:151543950614:web:0250b033252a9135fc7437",
+            measurementId: "G-GK4C4Z638T"
         };
 
         const app = initializeApp(firebaseConfig);
@@ -184,7 +192,6 @@
         let activeHeroIndex = 0;
         let heroCarouselTimer = null;
 
-        // INVENTORY HOOK LIFECYCLES
         document.addEventListener("DOMContentLoaded", () => {
             initRealTimeSynchronizers();
             initSearchEngine();
@@ -195,20 +202,17 @@
         });
 
         function initRealTimeSynchronizers() {
-            // Movies Listener Node
             onSnapshot(collection(db, "movies"), (snapshot) => {
                 masterMovies = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
                 renderShelvesPipeline();
                 hydrateContinueWatchingUI();
             });
 
-            // Banners Listener Node
             onSnapshot(collection(db, "banners"), (snapshot) => {
                 masterBanners = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
                 renderHeroCarousel();
             });
 
-            // Authentication Engine State Wireframe
             onAuthStateChanged(auth, (user) => {
                 if (user) {
                     activeUser = user;
@@ -256,15 +260,12 @@
             });
         }
 
-        // HOMEPAGE DISPLAY PIPELINES
         function renderShelvesPipeline() {
             const trending = masterMovies.filter(m => m.trending === true || m.trending === "true");
-            const latest = masterMovies.filter(m => m.latestRelease === true || m.latestRelease === "true");
-            const topRated = [...masterMovies].sort((a,b) => b.releaseYear - a.releaseYear);
+            const teluguAll = [...masterMovies]; // Lists all elements in database catalog natively
 
             evaluateShelfVisibility(trending, "trending-section", "trending-shelf");
-            evaluateShelfVisibility(latest, "latest-section", "latest-shelf");
-            evaluateShelfVisibility(topRated, "top-section", "top-shelf");
+            evaluateShelfVisibility(teluguAll, "telugu-section", "telugu-shelf");
         }
 
         function evaluateShelfVisibility(arr, sectionId, shelfId) {
@@ -295,13 +296,11 @@
                 </div>
             `).join('');
 
-            // Bind individual elements
             shelf.querySelectorAll('.movie-card').forEach(card => {
                 card.onclick = () => openMovieDetailsSequence(card.dataset.id);
             });
         }
 
-        // HERO BANNER CAROUSEL CONTROL LAYOUT
         function renderHeroCarousel() {
             const container = document.getElementById("hero-slider-container");
             const dots = document.getElementById("hero-carousel-dots");
@@ -328,6 +327,7 @@
                 heroCarouselTimer = setInterval(() => {
                     const slides = container.querySelectorAll('.hero-slide');
                     const indicators = dots.querySelectorAll('button');
+                    if(!slides[activeHeroIndex]) return;
                     slides[activeHeroIndex].classList.remove('active');
                     indicators[activeHeroIndex].classList.remove('bg-brand-500', 'w-5');
                     
@@ -339,7 +339,6 @@
             }
         }
 
-        // DETAIL FRAME WINDOW INTERACTION LAYER
         async function openMovieDetailsSequence(movieId) {
             const movie = masterMovies.find(m => m.id === movieId);
             if (!movie) return;
@@ -392,7 +391,7 @@
             }
 
             await setDoc(docRef, { movieIds: currentIds }, { merge: true });
-            openMovieDetailsSequence(movieId); // Refresh button display state
+            openMovieDetailsSequence(movieId);
         }
 
         function toggleDetailsModal(show) {
@@ -401,13 +400,11 @@
             else modal.classList.add("hidden");
         }
 
-        // CINEMATIC STAGE PLAYBACK MECHANICS
         function executeStreamInstantiation(movie) {
             document.getElementById("player-title").innerText = movie.title;
             const playerNode = document.getElementById("player-view-node");
             const url = movie.movieUrl;
 
-            // Cache details inside Client LocalStorage space
             localStorage.setItem("cineo_resume_node", JSON.stringify({ id: movie.id, timestamp: Date.now() }));
             hydrateContinueWatchingUI();
 
@@ -420,7 +417,7 @@
                 `;
                 setTimeout(() => {
                     const video = document.getElementById('hls-video');
-                    if (Hls.isSupported()) {
+                    if (window.Hls && Hls.isSupported()) {
                         const hls = new Hls(); hls.loadSource(url); hls.attachMedia(video);
                     } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
                         video.src = url;
@@ -438,7 +435,6 @@
             document.getElementById("player-view-node").innerHTML = "";
         }
 
-        // LOCAL STORAGE CONTINUE WATCHING TRACKS
         function hydrateContinueWatchingUI() {
             const parent = document.getElementById("continue-section");
             const grid = document.getElementById("continue-grid");
@@ -462,7 +458,6 @@
             `;
         }
 
-        // SYSTEM SEARCH ALGORITHM INLINE INTERLOCK
         function initSearchEngine() {
             const input = document.getElementById("search-input");
             input.oninput = (e) => {
@@ -471,24 +466,21 @@
 
                 const searchMatches = masterMovies.filter(m => m.title.toLowerCase().includes(val) || m.genre.toLowerCase().includes(val));
                 
-                // Overlay shelf targets to render direct search output arrays instead
                 document.getElementById("trending-section").classList.add("hidden");
-                document.getElementById("latest-section").classList.add("hidden");
-                document.getElementById("top-section").classList.remove("hidden");
-                document.querySelector("#top-section h3").innerText = `Search Index Output (${searchMatches.length})`;
-                injectMovieCards(searchMatches, "top-shelf");
+                document.getElementById("telugu-section").classList.remove("hidden");
+                document.querySelector("#telugu-section h3").innerText = `Search Output Index (${searchMatches.length})`;
+                injectMovieCards(searchMatches, "telugu-shelf");
             };
         }
 
-        // AUTHENTICATION DELEGATE ASSIGNMENT HANDLERS
         async function executeProfileAuthentication() {
-            try { await signInWithPopup(auth, provider); } catch (e) { dispatchToast("Authorization sequence failure.", "error"); }
+            try { await signInWithPopup(auth, provider); } catch (e) { dispatchToast("Authentication error occurred.", "error"); }
         }
         async function executeProfileSignout() {
             try { await signOut(auth); } catch (e) { }
         }
 
-        function dispatchToast(msg, type = "success") {
+        function dispatchToast(msg) {
             const box = document.getElementById("toast-container");
             const node = document.createElement("div");
             node.className = "p-3 bg-white border text-xs font-bold rounded-xl shadow-lg transition-all duration-300 transform translate-x-6 opacity-0";
@@ -498,7 +490,6 @@
             setTimeout(() => { node.classList.add("opacity-0"); setTimeout(() => node.remove(), 300); }, 3000);
         }
 
-        // Global export linkage bindings mapping to custom HTML interface triggers
         window.toggleDetailsModal = toggleDetailsModal;
     </script>
 </body>
