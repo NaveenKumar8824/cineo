@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cineo Backstage - Security & Content Operations</title>
+    <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
@@ -15,9 +16,10 @@
 </head>
 <body class="antialiased text-slate-800">
 
+    <!-- LOGIN ENFORCEMENT OVERLAY -->
     <div id="admin-gate-modal" class="fixed inset-0 z-[200] bg-slate-900 flex items-center justify-center p-4">
         <div class="bg-white w-full max-w-sm rounded-2xl p-6 text-center space-y-4 shadow-2xl">
-            <div class="w-12 h-12 rounded-xl bg-brand-500 bg-blue-600 text-white flex items-center justify-center text-xl mx-auto"><i class="fa-solid fa-shield-halved"></i></div>
+            <div class="w-12 h-12 rounded-xl bg-blue-600 text-white flex items-center justify-center text-xl mx-auto"><i class="fa-solid fa-shield-halved"></i></div>
             <div>
                 <h2 class="text-xl font-black text-slate-900">Cineo Operational Gate</h2>
                 <p class="text-xs text-slate-400 mt-0.5">Administrative email validation verification required.</p>
@@ -29,6 +31,7 @@
         </div>
     </div>
 
+    <!-- ROOT ADMINISTRATION DASHBOARD -->
     <div id="admin-workspace" class="hidden min-h-screen flex flex-col">
         <header class="bg-slate-900 text-white px-6 py-4 flex items-center justify-between shadow-sm">
             <div class="flex items-center gap-3">
@@ -42,6 +45,7 @@
         </header>
 
         <main class="flex-1 p-6 max-w-7xl w-full mx-auto space-y-6">
+            <!-- STATISTICS METRIC MATRIX -->
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div class="bg-white border rounded-xl p-4 flex items-center justify-between shadow-sm">
                     <div><p class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Total Movies Cataloged</p><h3 id="stat-movies" class="text-2xl font-black text-slate-900 mt-1">0</h3></div>
@@ -58,7 +62,9 @@
             </div>
 
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <!-- FORM NODE MANAGERS (LEFT COLUMN) -->
                 <div class="lg:col-span-1 space-y-6">
+                    <!-- ADD/EDIT MOVIE DATA BLOCK FORM -->
                     <div class="bg-white border rounded-xl p-5 shadow-sm space-y-3">
                         <h4 class="text-xs uppercase font-extrabold text-slate-400 tracking-wider border-b pb-2"><i class="fa-solid fa-file-video mr-1"></i> Add / Edit Movie Node</h4>
                         <form id="movie-form" class="space-y-3 text-xs">
@@ -83,6 +89,7 @@
                         </form>
                     </div>
 
+                    <!-- ADD BANNER CAROUSEL FORM -->
                     <div class="bg-white border rounded-xl p-5 shadow-sm space-y-3">
                         <h4 class="text-xs uppercase font-extrabold text-slate-400 tracking-wider border-b pb-2"><i class="fa-solid fa-images mr-1"></i> Add Promo Banner</h4>
                         <form id="banner-form" class="space-y-3 text-xs">
@@ -98,7 +105,9 @@
                     </div>
                 </div>
 
+                <!-- REAL-TIME ASSET INVENTORY SHELVES (RIGHT COLS) -->
                 <div class="lg:col-span-2 space-y-6">
+                    <!-- INVENTORY MOVIES CATALOG -->
                     <div class="bg-white border rounded-xl p-5 shadow-sm space-y-3">
                         <h4 class="text-xs uppercase font-extrabold text-slate-400 tracking-wider border-b pb-1">Master Inventory Movies List</h4>
                         <div id="inventory-movies-box" class="space-y-2 max-h-[450px] overflow-y-auto pr-1">
@@ -106,6 +115,7 @@
                         </div>
                     </div>
 
+                    <!-- INVENTORY BANNERS LIST -->
                     <div class="bg-white border rounded-xl p-5 shadow-sm space-y-3">
                         <h4 class="text-xs uppercase font-extrabold text-slate-400 tracking-wider border-b pb-1">Active Carousel Banners Inventory</h4>
                         <div id="inventory-banners-box" class="space-y-2 max-h-[300px] overflow-y-auto pr-1">
@@ -117,19 +127,21 @@
         </main>
     </div>
 
+    <!-- OPERATIONS CONTROLLER LOGIC MATRIX -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getAuth, signInWithPopup, GoogleAuthProvider, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
         import { getFirestore, doc, setDoc, deleteDoc, collection, onSnapshot, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-        // IMPORTANT: Use your explicit matching Firebase infrastructure configuration block
+        // Integrated client configurations
         const firebaseConfig = {
-            apiKey: "YOUR_API_KEY",
-            authDomain: "YOUR_AUTH_DOMAIN",
-            projectId: "YOUR_PROJECT_ID",
-            storageBucket: "YOUR_STORAGE_BUCKET",
-            messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
-            appId: "YOUR_APP_ID"
+            apiKey: "AIzaSyANrrHFyhq3dLpgBPamM0wF8lFa7ENd6oA",
+            authDomain: "cineo-medianetwork.firebaseapp.com",
+            projectId: "cineo-medianetwork",
+            storageBucket: "cineo-medianetwork.firebasestorage.app",
+            messagingSenderId: "151543950614",
+            appId: "1:151543950614:web:0250b033252a9135fc7437",
+            measurementId: "G-GK4C4Z638T"
         };
 
         const app = initializeApp(firebaseConfig);
@@ -143,14 +155,12 @@
         document.getElementById("movie-form").onsubmit = submitMovieForm;
         document.getElementById("banner-form").onsubmit = submitBannerForm;
 
-        // AUTH SECURITY WATCHER
         onAuthStateChanged(auth, async (user) => {
             const gate = document.getElementById("admin-gate-modal");
             const workspace = document.getElementById("admin-workspace");
             const errLog = document.getElementById("gate-error");
 
             if (user) {
-                // Query absolute authorization verification node in Firestore database space
                 const adminCheck = await getDoc(doc(db, "admins", user.email.toLowerCase().trim()));
                 if (adminCheck.exists()) {
                     gate.classList.add("hidden");
@@ -173,21 +183,17 @@
             try { await signInWithPopup(auth, provider); } catch(e) { }
         }
 
-        // STATS COUNTER REAL-TIME HANDLERS
         function initDashboardMetricsPipeline() {
-            // Monitor Movies Collection
             onSnapshot(collection(db, "movies"), (snap) => {
                 const movies = snap.docs.map(d => ({ id: d.id, ...d.data() }));
                 document.getElementById("stat-movies").innerText = movies.length;
                 renderMoviesInventory(movies);
             });
 
-            // Monitor Users Collection
             onSnapshot(collection(db, "users"), (snap) => {
                 document.getElementById("stat-users").innerText = snap.size;
             });
 
-            // Monitor Banners Collection
             onSnapshot(collection(db, "banners"), (snap) => {
                 const banners = snap.docs.map(d => ({ id: d.id, ...d.data() }));
                 document.getElementById("stat-banners").innerText = banners.length;
@@ -195,7 +201,6 @@
             });
         }
 
-        // MOVIE DATA MUTATION DISPATCHERS
         async function submitMovieForm(e) {
             e.preventDefault();
             const id = document.getElementById("movie-id").value || `movie_${Date.now()}`;
@@ -262,7 +267,6 @@
             document.getElementById("movie-id").value = "";
         }
 
-        // BANNER ASSET MUTATION HANDLERS
         async function submitBannerForm(e) {
             e.preventDefault();
             const id = document.getElementById("banner-id").value || `banner_${Date.now()}`;
