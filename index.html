@@ -1,556 +1,505 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="scroll-smooth">
 <head>
-<meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Telugu Community – Registration</title>
-<link href="https://fonts.googleapis.com/css2?family=Tiro+Telugu&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet"/>
-<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
-<!-- Firebase -->
-<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
-<style>
-  :root {
-    --saffron: #FF6B00;
-    --saffron-light: #FFF0E5;
-    --green: #138808;
-    --green-light: #E8F5E9;
-    --dark: #1A1A1A;
-    --muted: #6B6B6B;
-    --border: #E0E0E0;
-    --white: #FFFFFF;
-    --bg: #FAF8F5;
-  }
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  body {
-    font-family: 'DM Sans', sans-serif;
-    background: var(--bg);
-    color: var(--dark);
-    min-height: 100vh;
-  }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cineo - Your Telugu Cinema Universe</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 
-  /* HEADER */
-  header {
-    background: var(--white);
-    border-bottom: 3px solid var(--saffron);
-    padding: 0 2rem;
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    height: 72px;
-    position: sticky;
-    top: 0;
-    z-index: 100;
-    box-shadow: 0 2px 12px rgba(0,0,0,0.06);
-  }
-  .logo-mark {
-    width: 46px; height: 46px;
-    background: linear-gradient(135deg, var(--saffron), #FF9800);
-    border-radius: 12px;
-    display: flex; align-items: center; justify-content: center;
-    font-family: 'Tiro Telugu', serif;
-    color: white; font-size: 22px; font-weight: bold;
-    flex-shrink: 0;
-  }
-  .site-name { font-size: 1.3rem; font-weight: 600; color: var(--dark); }
-  .site-sub  { font-size: 0.8rem; color: var(--muted); margin-top: 1px; }
-  header nav { margin-left: auto; }
-  header nav a {
-    text-decoration: none;
-    color: var(--muted);
-    font-size: 0.9rem;
-    padding: 6px 14px;
-    border-radius: 8px;
-    transition: background 0.2s;
-  }
-  header nav a:hover { background: var(--saffron-light); color: var(--saffron); }
-
-  /* HERO */
-  .hero {
-    background: linear-gradient(135deg, #FFF8F2 0%, #FFF3E8 50%, #F0FAF0 100%);
-    border-bottom: 1px solid var(--border);
-    padding: 3rem 2rem 2.5rem;
-    text-align: center;
-  }
-  .hero-badge {
-    display: inline-block;
-    background: var(--saffron-light);
-    color: var(--saffron);
-    font-size: 0.8rem;
-    font-weight: 600;
-    padding: 4px 14px;
-    border-radius: 20px;
-    margin-bottom: 1rem;
-    letter-spacing: 0.5px;
-    text-transform: uppercase;
-  }
-  .hero h1 {
-    font-family: 'Tiro Telugu', serif;
-    font-size: clamp(2rem, 5vw, 3rem);
-    color: var(--dark);
-    line-height: 1.2;
-  }
-  .hero h1 span { color: var(--saffron); }
-  .hero p { color: var(--muted); margin-top: 0.75rem; font-size: 1rem; }
-  .stripe { display: flex; gap: 0; margin: 1.5rem auto 0; width: 80px; border-radius: 4px; overflow: hidden; }
-  .stripe div { height: 5px; flex: 1; }
-  .stripe .s1 { background: #FF6B00; }
-  .stripe .s2 { background: white; }
-  .stripe .s3 { background: #138808; }
-
-  /* MAIN LAYOUT */
-  .container { max-width: 680px; margin: 0 auto; padding: 2rem 1.5rem 4rem; }
-
-  /* PRICING PILLS */
-  .pricing-row {
-    display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px;
-    margin-bottom: 2rem;
-  }
-  .price-pill {
-    background: var(--white); border: 1px solid var(--border);
-    border-radius: 12px; padding: 14px 8px; text-align: center;
-    transition: all 0.2s;
-  }
-  .price-pill .yr { font-size: 0.75rem; color: var(--muted); font-weight: 500; }
-  .price-pill .amt { font-size: 1.3rem; font-weight: 600; color: var(--saffron); margin-top: 2px; }
-  .price-pill.active { border-color: var(--saffron); background: var(--saffron-light); }
-  .price-pill.active .yr { color: var(--saffron); }
-
-  /* FORM CARD */
-  .form-card {
-    background: var(--white);
-    border: 1px solid var(--border);
-    border-radius: 20px;
-    padding: 2rem;
-    box-shadow: 0 4px 24px rgba(0,0,0,0.06);
-  }
-  .form-card h2 {
-    font-size: 1.15rem; font-weight: 600; margin-bottom: 1.5rem;
-    padding-bottom: 1rem; border-bottom: 1px solid var(--border);
-    display: flex; align-items: center; gap: 8px;
-  }
-  .form-card h2 .dot { width: 10px; height: 10px; border-radius: 50%; background: var(--saffron); }
-
-  .field { margin-bottom: 1.25rem; }
-  label { display: block; font-size: 0.85rem; font-weight: 500; color: var(--dark); margin-bottom: 6px; }
-  label span { color: var(--saffron); }
-  input, select {
-    width: 100%; padding: 11px 14px;
-    border: 1.5px solid var(--border); border-radius: 10px;
-    font-family: 'DM Sans', sans-serif; font-size: 0.95rem;
-    color: var(--dark); background: var(--white);
-    transition: border-color 0.2s, box-shadow 0.2s;
-    outline: none;
-    appearance: none; -webkit-appearance: none;
-  }
-  input:focus, select:focus {
-    border-color: var(--saffron);
-    box-shadow: 0 0 0 3px rgba(255,107,0,0.12);
-  }
-  .select-wrap { position: relative; }
-  .select-wrap::after {
-    content: '▾'; position: absolute; right: 14px; top: 50%;
-    transform: translateY(-50%); color: var(--muted); pointer-events: none;
-    font-size: 1rem;
-  }
-
-  /* AMOUNT BOX */
-  .amount-box {
-    background: linear-gradient(135deg, #FFF3E8, #FFF8F2);
-    border: 1.5px solid var(--saffron);
-    border-radius: 12px; padding: 1rem 1.25rem;
-    display: flex; justify-content: space-between; align-items: center;
-    margin: 1.5rem 0;
-  }
-  .amount-box .label { font-size: 0.9rem; color: var(--muted); }
-  .amount-box .value { font-size: 1.6rem; font-weight: 600; color: var(--saffron); }
-  .amount-box .value.hidden { display: none; }
-
-  /* PAY BUTTON */
-  .pay-btn {
-    width: 100%; padding: 14px;
-    background: linear-gradient(135deg, var(--saffron), #FF8C00);
-    color: white; font-family: 'DM Sans', sans-serif;
-    font-size: 1rem; font-weight: 600;
-    border: none; border-radius: 12px; cursor: pointer;
-    transition: transform 0.15s, box-shadow 0.15s;
-    box-shadow: 0 4px 16px rgba(255,107,0,0.35);
-    letter-spacing: 0.3px;
-    display: flex; align-items: center; justify-content: center; gap: 8px;
-  }
-  .pay-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(255,107,0,0.4); }
-  .pay-btn:active { transform: translateY(0); }
-  .pay-btn:disabled { background: #ccc; box-shadow: none; cursor: not-allowed; transform: none; }
-
-  /* INFO NOTE */
-  .info-note {
-    font-size: 0.8rem; color: var(--muted);
-    text-align: center; margin-top: 0.75rem;
-    display: flex; align-items: center; justify-content: center; gap: 5px;
-  }
-
-  /* SUCCESS SCREEN */
-  #success-screen {
-    display: none;
-    text-align: center; padding: 2rem;
-  }
-  .success-icon {
-    width: 80px; height: 80px; border-radius: 50%;
-    background: var(--green-light);
-    display: flex; align-items: center; justify-content: center;
-    margin: 0 auto 1.5rem; font-size: 2.5rem;
-  }
-  #success-screen h2 { font-size: 1.5rem; font-weight: 600; margin-bottom: 0.5rem; color: var(--green); }
-  #success-screen p { color: var(--muted); margin-bottom: 1.5rem; line-height: 1.6; }
-  .whatsapp-btn {
-    display: inline-flex; align-items: center; gap: 8px;
-    background: #25D366; color: white;
-    padding: 12px 24px; border-radius: 12px;
-    text-decoration: none; font-weight: 600; font-size: 0.95rem;
-    box-shadow: 0 4px 14px rgba(37,211,102,0.35);
-    transition: transform 0.15s;
-  }
-  .whatsapp-btn:hover { transform: translateY(-2px); }
-  .invoice-box {
-    background: var(--bg); border: 1px solid var(--border);
-    border-radius: 12px; padding: 1.25rem;
-    margin: 1.5rem 0; text-align: left;
-  }
-  .invoice-box .inv-row {
-    display: flex; justify-content: space-between;
-    padding: 5px 0; font-size: 0.9rem; border-bottom: 1px solid var(--border);
-  }
-  .invoice-box .inv-row:last-child { border-bottom: none; }
-  .invoice-box .inv-row .k { color: var(--muted); }
-  .invoice-box .inv-row .v { font-weight: 500; }
-  .invoice-box .inv-row.total .v { color: var(--saffron); font-size: 1.1rem; font-weight: 600; }
-
-  /* FOOTER */
-  footer {
-    text-align: center; padding: 2rem;
-    border-top: 1px solid var(--border);
-    color: var(--muted); font-size: 0.8rem;
-    background: var(--white);
-  }
-  .flag-stripe { display: flex; height: 3px; }
-  .flag-stripe div { flex: 1; }
-
-  /* Error */
-  .err { color: #E53935; font-size: 0.8rem; margin-top: 4px; display: none; }
-
-  @media(max-width: 480px) {
-    .pricing-row { grid-template-columns: repeat(2, 1fr); }
-    .form-card { padding: 1.25rem; }
-  }
-</style>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['Plus Jakarta Sans', 'sans-serif'] },
+                    colors: {
+                        brand: {
+                            50: '#f0f7ff', 100: '#e0effe', 200: '#bce0fe', 300: '#7ec4fc',
+                            400: '#38a3f9', 500: '#0e87e9', 600: '#0269c7', 700: '#0354a1',
+                            800: '#074885', 900: '#0c3d6f', 950: '#082749',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { background-color: #f8fafc; color: #0f172a; overflow-x: hidden; }
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: #f1f5f9; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        .glass-panel { background: rgba(255, 255, 255, 0.75); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.5); }
+        .hero-slide { opacity: 0; transition: opacity 1s ease-in-out, transform 1s ease-in-out; transform: scale(1.01); pointer-events: none; }
+        .hero-slide.active { opacity: 1; transform: scale(1); pointer-events: auto; }
+        .movie-card { transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
+        .movie-card:hover { transform: translateY(-6px); box-shadow: 0 20px 25px -5px rgba(14, 135, 233, 0.1); }
+    </style>
 </head>
-<body>
+<body class="font-sans antialiased text-slate-800 bg-slate-50/50">
 
-<!-- HEADER -->
-<header>
-  <div class="logo-mark">త</div>
-  <div>
-    <div class="site-name">Telugu Community</div>
-    <div class="site-sub">College Registration Portal</div>
-  </div>
-  <nav>
-    <a href="admin.html">Admin ↗</a>
-  </nav>
-</header>
+    <div id="toast-container" class="fixed top-24 right-6 z-[100] flex flex-col gap-3 max-w-md w-full pointer-events-none"></div>
 
-<!-- HERO -->
-<div class="hero">
-  <div class="hero-badge">🎓 Academic Year 2024–25</div>
-  <h1>Join the <span>Telugu</span> Community</h1>
-  <p>Register, pay your membership fee & get your digital invoice instantly on WhatsApp</p>
-  <div class="stripe"><div class="s1"></div><div class="s2"></div><div class="s3"></div></div>
-</div>
+    <nav id="navbar" class="fixed top-0 left-0 w-full z-50 glass-panel shadow-sm transition-all duration-300 px-4 lg:px-12 py-4 flex items-center justify-between">
+        <div class="flex items-center gap-8">
+            <a href="#" class="flex items-center gap-2 group">
+                <div class="bg-gradient-to-tr from-brand-600 to-cyan-500 p-2.5 rounded-xl text-white shadow-lg"><i class="fa-solid fa-clapperboard-play text-xl"></i></div>
+                <div class="flex flex-col">
+                    <span class="text-2xl font-extrabold tracking-tight bg-gradient-to-r from-brand-700 via-brand-600 to-cyan-600 bg-clip-text text-transparent">Cineo</span>
+                    <span class="text-[9px] uppercase font-bold tracking-widest text-slate-400 mt-[-2px]">Telugu Universe</span>
+                </div>
+            </a>
+            <div class="hidden lg:flex items-center gap-6 text-sm font-semibold text-slate-600">
+                <a href="#" class="text-brand-600">Home</a>
+                <a href="#trending-section" class="hover:text-brand-600">Trending</a>
+                <a href="#latest-section" class="hover:text-brand-600">Latest Releases</a>
+                <a href="#top-section" class="hover:text-brand-600">Top Telugu</a>
+                <a href="#watchlist-section" id="nav-watchlist-link" class="hidden hover:text-brand-600">My Watchlist</a>
+            </div>
+        </div>
 
-<!-- MAIN -->
-<div class="container">
+        <div class="flex items-center gap-4">
+            <div class="relative flex items-center bg-slate-100 rounded-xl px-3 border border-slate-200">
+                <i class="fa-solid fa-magnifying-glass text-slate-400 text-sm"></i>
+                <input type="text" id="search-input" placeholder="Search movies..." class="bg-transparent border-none outline-none focus:ring-0 text-xs py-2.5 px-2 w-40 sm:w-60">
+            </div>
 
-  <!-- PRICING PREVIEW -->
-  <div class="pricing-row" id="pricing-row">
-    <div class="price-pill" data-year="1"><div class="yr">1st Year</div><div class="amt">₹250</div></div>
-    <div class="price-pill" data-year="2"><div class="yr">2nd Year</div><div class="amt">₹300</div></div>
-    <div class="price-pill" data-year="3"><div class="yr">3rd Year</div><div class="amt">₹350</div></div>
-    <div class="price-pill" data-year="4"><div class="yr">4th Year</div><div class="amt">₹400</div></div>
-  </div>
+            <div id="auth-zone">
+                <button id="login-btn" class="flex items-center gap-2 bg-gradient-to-r from-brand-600 to-brand-500 text-white font-semibold text-xs px-4 py-2.5 rounded-xl shadow-md">
+                    <i class="fa-solid fa-right-to-bracket"></i> Sign In
+                </button>
+                <div id="profile-menu" class="hidden flex items-center gap-3 cursor-pointer relative" onclick="document.getElementById('profile-dropdown').classList.toggle('hidden')">
+                    <img id="user-avatar" src="" alt="Avatar" class="w-9 h-9 rounded-xl border-2 border-brand-500 object-cover shadow-sm">
+                    <div id="profile-dropdown" class="hidden absolute top-12 right-0 w-48 bg-white rounded-xl shadow-xl border border-slate-100 py-1.5 flex flex-col z-50">
+                        <button id="logout-btn" class="px-4 py-2 text-left text-xs font-bold text-rose-600 hover:bg-slate-50"><i class="fa-solid fa-power-off mr-2"></i>Sign Out</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
 
-  <!-- FORM -->
-  <div class="form-card" id="form-card">
-    <h2><div class="dot"></div> Member Registration</h2>
+    <header class="relative w-full h-[50vh] sm:h-[75vh] bg-slate-900 mt-[76px] overflow-hidden">
+        <div class="absolute inset-0 bg-gradient-to-t from-slate-50 via-slate-900/30 to-transparent z-10 pointer-events-none"></div>
+        <div class="absolute inset-0 bg-gradient-to-r from-slate-950/70 via-transparent to-transparent z-10 pointer-events-none"></div>
+        <div id="hero-slider-container" class="w-full h-full relative">
+            <div class="absolute inset-0 flex items-center justify-center text-slate-400 text-xs">Waiting for cinematic assets...</div>
+        </div>
+        <div class="absolute bottom-6 right-12 z-20 flex items-center gap-2" id="hero-carousel-dots"></div>
+    </header>
 
-    <div class="field">
-      <label>Full Name <span>*</span></label>
-      <input type="text" id="name" placeholder="Enter your full name"/>
-      <div class="err" id="err-name">Please enter your name</div>
+    <main class="relative z-20 px-4 lg:px-12 pb-24 -mt-12 sm:-mt-20 space-y-12">
+        
+        <section id="continue-section" class="hidden">
+            <div class="flex items-center gap-2 mb-4"><div class="w-1 h-5 bg-amber-500 rounded-full"></div><h2 class="text-lg font-extrabold tracking-tight">Continue Watching</h2></div>
+            <div id="continue-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4"></div>
+        </section>
+
+        <section id="watchlist-section" class="hidden">
+            <div class="flex items-center gap-2 mb-4"><div class="w-1 h-5 bg-rose-500 rounded-full"></div><h2 class="text-lg font-extrabold tracking-tight">My Watchlist</h2></div>
+            <div id="watchlist-shelf" class="flex items-center gap-5 overflow-x-auto py-2 no-scrollbar scroll-smooth"></div>
+        </section>
+
+        <section id="trending-section" class="hidden space-y-4">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center gap-2"><div class="w-1 h-5 bg-brand-600 rounded-full"></div><h3 class="text-lg font-extrabold tracking-tight">Trending Now</h3></div>
+            </div>
+            <div id="trending-shelf" class="flex items-center gap-5 overflow-x-auto py-2 no-scrollbar scroll-smooth"></div>
+        </section>
+
+        <section id="latest-section" class="hidden space-y-4">
+            <div class="flex items-center gap-2"><div class="w-1 h-5 bg-cyan-50 rounded-full"></div><h3 class="text-lg font-extrabold tracking-tight">Latest Releases</h3></div>
+            <div id="latest-shelf" class="flex items-center gap-5 overflow-x-auto py-2 no-scrollbar scroll-smooth"></div>
+        </section>
+
+        <section id="top-section" class="hidden space-y-4">
+            <div class="flex items-center gap-2"><div class="w-1 h-5 bg-indigo-600 rounded-full"></div><h3 class="text-lg font-extrabold tracking-tight">Top Telugu Movies</h3></div>
+            <div id="top-shelf" class="flex items-center gap-5 overflow-x-auto py-2 no-scrollbar scroll-smooth"></div>
+        </section>
+    </main>
+
+    <div id="details-modal" class="fixed inset-0 z-[70] bg-slate-950/80 backdrop-blur-md hidden flex items-center justify-center p-4">
+        <div class="bg-white w-full max-w-3xl rounded-2xl shadow-2xl overflow-hidden relative max-h-[90vh] flex flex-col">
+            <button onclick="toggleDetailsModal(false)" class="absolute top-4 right-4 z-30 w-8 h-8 rounded-full bg-slate-950/70 text-white flex items-center justify-center"><i class="fa-solid fa-xmark text-xs"></i></button>
+            <div class="overflow-y-auto flex-1 no-scrollbar">
+                <div class="w-full h-44 sm:h-64 relative bg-slate-900">
+                    <div class="absolute inset-0 bg-gradient-to-t from-white to-transparent z-10"></div>
+                    <img id="modal-banner" src="" class="w-full h-full object-cover">
+                </div>
+                <div class="p-6 grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div class="hidden md:block">
+                        <img id="modal-poster" src="" class="w-full h-60 object-cover rounded-xl shadow-md border">
+                    </div>
+                    <div class="md:col-span-2 space-y-4">
+                        <h2 id="modal-title" class="text-2xl font-black tracking-tight text-slate-950"></h2>
+                        <div class="flex flex-wrap gap-2 text-[11px] font-bold">
+                            <span id="modal-year" class="bg-slate-100 text-slate-600 px-2 py-0.5 rounded"></span>
+                            <span id="modal-genre" class="bg-brand-50 text-brand-700 px-2 py-0.5 rounded"></span>
+                        </div>
+                        <p id="modal-desc" class="text-xs text-slate-500 leading-relaxed font-medium"></p>
+                        <div class="flex flex-col sm:flex-row gap-3 pt-2">
+                            <button id="modal-play-btn" class="bg-brand-600 hover:bg-brand-700 text-white font-bold text-xs px-6 py-3 rounded-xl flex items-center justify-center gap-2 shadow-lg"><i class="fa-solid fa-play"></i> Watch Now</button>
+                            <button id="modal-watchlist-btn" class="bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs px-4 py-3 rounded-xl flex items-center justify-center gap-2"></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
-    <div class="field">
-      <label>Mobile Number <span>*</span></label>
-      <input type="tel" id="mobile" placeholder="10-digit mobile number" maxlength="10"/>
-      <div class="err" id="err-mobile">Enter valid 10-digit mobile number</div>
+    <div id="player-modal" class="fixed inset-0 z-[110] bg-black hidden flex flex-col">
+        <div class="absolute top-0 left-0 w-full p-4 bg-gradient-to-b from-black/80 to-transparent z-50 flex items-center justify-between text-white">
+            <span id="player-title" class="text-sm font-bold tracking-tight"></span>
+            <button onclick="terminatePlayerStream()" class="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center border border-white/10"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        <div class="flex-1 w-full h-full flex items-center justify-center" id="player-view-node"></div>
     </div>
 
-    <div class="field">
-      <label>Branch / Department <span>*</span></label>
-      <div class="select-wrap">
-        <select id="branch">
-          <option value="">Select your branch</option>
-          <option>Computer Science & Engineering (CSE)</option>
-          <option>Electronics & Communication (ECE)</option>
-          <option>Electrical Engineering (EEE)</option>
-          <option>Mechanical Engineering (MECH)</option>
-          <option>Civil Engineering (CIVIL)</option>
-          <option>Information Technology (IT)</option>
-          <option>Chemical Engineering</option>
-          <option>Biotechnology</option>
-          <option>Other</option>
-        </select>
-      </div>
-      <div class="err" id="err-branch">Please select your branch</div>
-    </div>
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getAuth, signInWithPopup, GoogleAuthProvider, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+        import { getFirestore, doc, setDoc, getDoc, collection, onSnapshot, query, where } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-    <div class="field">
-      <label>Graduating Year <span>*</span></label>
-      <div class="select-wrap">
-        <select id="year" onchange="onYearChange(this.value)">
-          <option value="">Select your year</option>
-          <option value="1">1st Year</option>
-          <option value="2">2nd Year</option>
-          <option value="3">3rd Year</option>
-          <option value="4">4th Year</option>
-        </select>
-      </div>
-      <div class="err" id="err-year">Please select your year</div>
-    </div>
+        // IMPORTANT: Insert your actual configuration matrix credentials block here
+        const firebaseConfig = {
+            apiKey: "YOUR_API_KEY",
+            authDomain: "YOUR_AUTH_DOMAIN",
+            projectId: "YOUR_PROJECT_ID",
+            storageBucket: "YOUR_STORAGE_BUCKET",
+            messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
+            appId: "YOUR_APP_ID"
+        };
 
-    <div class="amount-box" id="amount-box">
-      <div>
-        <div class="label">Membership Fee</div>
-        <div style="font-size:0.78rem;color:#aaa;margin-top:2px;">Select year to see amount</div>
-      </div>
-      <div class="value hidden" id="amount-display"></div>
-    </div>
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+        const provider = new GoogleAuthProvider();
 
-    <button class="pay-btn" id="pay-btn" onclick="startPayment()">
-      🔒 Pay & Register
-    </button>
-    <div class="info-note">🛡️ Secured by Razorpay &nbsp;|&nbsp; 2% gateway fee included</div>
-  </div>
+        let masterMovies = [];
+        let masterBanners = [];
+        let activeUser = null;
+        let activeHeroIndex = 0;
+        let heroCarouselTimer = null;
 
-  <!-- SUCCESS SCREEN -->
-  <div class="form-card" id="success-screen">
-    <div class="success-icon">✅</div>
-    <h2>Payment Successful!</h2>
-    <p>Thank you for registering with Telugu Community.<br/>Your invoice is ready below.</p>
+        // INVENTORY HOOK LIFECYCLES
+        document.addEventListener("DOMContentLoaded", () => {
+            initRealTimeSynchronizers();
+            initSearchEngine();
+            hydrateContinueWatchingUI();
+            
+            document.getElementById("login-btn").onclick = executeProfileAuthentication;
+            document.getElementById("logout-btn").onclick = executeProfileSignout;
+        });
 
-    <div class="invoice-box" id="invoice-box"></div>
+        function initRealTimeSynchronizers() {
+            // Movies Listener Node
+            onSnapshot(collection(db, "movies"), (snapshot) => {
+                masterMovies = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                renderShelvesPipeline();
+                hydrateContinueWatchingUI();
+            });
 
-    <a class="whatsapp-btn" id="whatsapp-btn" href="#" target="_blank">
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
-      Send Invoice via WhatsApp
-    </a>
+            // Banners Listener Node
+            onSnapshot(collection(db, "banners"), (snapshot) => {
+                masterBanners = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                renderHeroCarousel();
+            });
 
-    <p style="margin-top:1.5rem;font-size:0.85rem;color:var(--muted);">
-      ← <a href="#" onclick="resetForm()" style="color:var(--saffron);text-decoration:none;font-weight:500;">Register another member</a>
-    </p>
-  </div>
+            // Authentication Engine State Wireframe
+            onAuthStateChanged(auth, (user) => {
+                if (user) {
+                    activeUser = user;
+                    document.getElementById("login-btn").classList.add("hidden");
+                    document.getElementById("profile-menu").classList.remove("hidden");
+                    document.getElementById("user-avatar").src = user.photoURL;
+                    syncUserProfileToFirestore(user);
+                    initWatchlistRealTimeSync(user.uid);
+                } else {
+                    activeUser = null;
+                    document.getElementById("login-btn").classList.remove("hidden");
+                    document.getElementById("profile-menu").classList.add("hidden");
+                    document.getElementById("watchlist-section").classList.add("hidden");
+                    document.getElementById("nav-watchlist-link").classList.add("hidden");
+                }
+            });
+        }
 
-</div>
+        async function syncUserProfileToFirestore(user) {
+            await setDoc(doc(db, "users", user.uid), {
+                uid: user.uid,
+                name: user.displayName,
+                email: user.email,
+                photo: user.photoURL,
+                lastLogin: new Date()
+            }, { merge: true });
+        }
 
-<!-- FOOTER -->
-<footer>
-  <div class="flag-stripe"><div style="background:#FF6B00"></div><div style="background:white;border-top:1px solid #eee;border-bottom:1px solid #eee"></div><div style="background:#138808"></div></div>
-  <p style="margin-top:1rem;">© 2024 Telugu Community · All rights reserved</p>
-</footer>
+        function initWatchlistRealTimeSync(uid) {
+            onSnapshot(doc(db, "watchlists", uid), (docSnap) => {
+                if (docSnap.exists() && activeUser) {
+                    const listIds = docSnap.data().movieIds || [];
+                    const filteredMovies = masterMovies.filter(m => listIds.includes(m.id));
+                    
+                    if(filteredMovies.length > 0) {
+                        document.getElementById("watchlist-section").classList.remove("hidden");
+                        document.getElementById("nav-watchlist-link").classList.remove("hidden");
+                        injectMovieCards(filteredMovies, "watchlist-shelf");
+                    } else {
+                        document.getElementById("watchlist-section").classList.add("hidden");
+                    }
+                } else {
+                    document.getElementById("watchlist-section").classList.add("hidden");
+                }
+            });
+        }
 
-<script>
-// ═══════════════════════════════════════════
-// 🔧 CONFIGURE THESE BEFORE GOING LIVE
-// ═══════════════════════════════════════════
-const CONFIG = {
-  RAZORPAY_KEY: "rzp_test_XXXXXXXXXXXXXXXXXX",  // Replace with your Razorpay Key ID
-  ADMIN_WHATSAPP: "919XXXXXXXXX",               // Replace: 91 + your 10-digit number
-  FIREBASE: {
-    apiKey: "YOUR_API_KEY",
-    authDomain: "YOUR_PROJECT.firebaseapp.com",
-    projectId: "YOUR_PROJECT_ID",
-    storageBucket: "YOUR_PROJECT.appspot.com",
-    messagingSenderId: "YOUR_SENDER_ID",
-    appId: "YOUR_APP_ID"
-  }
-};
-// ═══════════════════════════════════════════
+        // HOMEPAGE DISPLAY PIPELINES
+        function renderShelvesPipeline() {
+            const trending = masterMovies.filter(m => m.trending === true || m.trending === "true");
+            const latest = masterMovies.filter(m => m.latestRelease === true || m.latestRelease === "true");
+            const topRated = [...masterMovies].sort((a,b) => b.releaseYear - a.releaseYear);
 
-const FEES = { "1": 250, "2": 300, "3": 350, "4": 400 };
-const YEAR_LABELS = { "1": "1st Year", "2": "2nd Year", "3": "3rd Year", "4": "4th Year" };
-let currentData = {};
+            evaluateShelfVisibility(trending, "trending-section", "trending-shelf");
+            evaluateShelfVisibility(latest, "latest-section", "latest-shelf");
+            evaluateShelfVisibility(topRated, "top-section", "top-shelf");
+        }
 
-// Init Firebase
-let db;
-try {
-  firebase.initializeApp(CONFIG.FIREBASE);
-  db = firebase.firestore();
-} catch(e) { console.warn("Firebase not configured yet:", e.message); }
+        function evaluateShelfVisibility(arr, sectionId, shelfId) {
+            const block = document.getElementById(sectionId);
+            if(arr.length > 0) {
+                block.classList.remove("hidden");
+                injectMovieCards(arr, shelfId);
+            } else {
+                block.classList.add("hidden");
+            }
+        }
 
-// Year select → update pricing pills + amount box
-function onYearChange(val) {
-  document.querySelectorAll('.price-pill').forEach(p => {
-    p.classList.toggle('active', p.dataset.year === val);
-  });
-  const disp = document.getElementById('amount-display');
-  if (val && FEES[val]) {
-    disp.textContent = '₹' + FEES[val];
-    disp.classList.remove('hidden');
-    document.getElementById('amount-box').querySelector('div > div:last-child').style.display = 'none';
-  } else {
-    disp.classList.add('hidden');
-    document.getElementById('amount-box').querySelector('div > div:last-child').style.display = '';
-  }
-}
+        function injectMovieCards(list, targetShelfId) {
+            const shelf = document.getElementById(targetShelfId);
+            if (!shelf) return;
+            shelf.innerHTML = list.map(movie => `
+                <div class="movie-card flex-shrink-0 w-36 sm:w-48 bg-white rounded-xl overflow-hidden border border-slate-200/60 cursor-pointer shadow-sm relative" data-id="${movie.id}">
+                    <div class="w-full h-48 sm:h-64 relative bg-slate-100">
+                        <img src="${movie.posterUrl}" class="w-full h-full object-cover" loading="lazy">
+                    </div>
+                    <div class="p-2.5 bg-white space-y-0.5">
+                        <h4 class="text-xs font-bold text-slate-800 truncate">${movie.title}</h4>
+                        <div class="flex items-center justify-between text-[10px] text-slate-400 font-bold">
+                            <span>${movie.releaseYear}</span>
+                            <span class="text-brand-600 bg-brand-50 px-1 rounded">${movie.genre}</span>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
 
-// Validation
-function validate() {
-  let ok = true;
-  const name   = document.getElementById('name').value.trim();
-  const mobile = document.getElementById('mobile').value.trim();
-  const branch = document.getElementById('branch').value;
-  const year   = document.getElementById('year').value;
+            // Bind individual elements
+            shelf.querySelectorAll('.movie-card').forEach(card => {
+                card.onclick = () => openMovieDetailsSequence(card.dataset.id);
+            });
+        }
 
-  const show = (id, cond) => {
-    document.getElementById(id).style.display = cond ? 'block' : 'none';
-    return cond;
-  };
+        // HERO BANNER CAROUSEL CONTROL LAYOUT
+        function renderHeroCarousel() {
+            const container = document.getElementById("hero-slider-container");
+            const dots = document.getElementById("hero-carousel-dots");
+            if (!container || masterBanners.length === 0) return;
 
-  if (show('err-name',   !name))   ok = false;
-  if (show('err-mobile', !/^\d{10}$/.test(mobile))) ok = false;
-  if (show('err-branch', !branch)) ok = false;
-  if (show('err-year',   !year))   ok = false;
+            clearInterval(heroCarouselTimer);
 
-  return ok ? { name, mobile, branch, year } : null;
-}
+            container.innerHTML = masterBanners.map((banner, index) => `
+                <div class="hero-slide absolute inset-0 w-full h-full ${index === 0 ? 'active' : ''}">
+                    <img src="${banner.bannerImageUrl}" class="w-full h-full object-cover">
+                    <div class="absolute bottom-12 left-4 lg:left-12 max-w-lg z-20 space-y-2 text-white">
+                        <h2 class="text-2xl sm:text-4xl font-black leading-none drop-shadow-md text-white">${banner.title}</h2>
+                        <p class="text-xs text-slate-200 line-clamp-2 font-medium drop-shadow-sm leading-relaxed">${banner.description}</p>
+                    </div>
+                </div>
+            `).join('');
 
-// Start Razorpay payment
-function startPayment() {
-  const data = validate();
-  if (!data) return;
+            dots.innerHTML = masterBanners.map((_, i) => `
+                <button class="w-2 h-2 rounded-full bg-white/40 transition-all ${i === 0 ? 'bg-brand-500 w-5' : ''}" data-idx="${i}"></button>
+            `).join('');
 
-  const amount = FEES[data.year];
-  const options = {
-    key: CONFIG.RAZORPAY_KEY,
-    amount: amount * 100,          // paise
-    currency: "INR",
-    name: "Telugu Community",
-    description: `${YEAR_LABELS[data.year]} Membership`,
-    image: "",
-    prefill: { name: data.name, contact: data.mobile },
-    theme: { color: "#FF6B00" },
-    handler: function(response) {
-      onPaymentSuccess(data, amount, response.razorpay_payment_id);
-    },
-    modal: {
-      ondismiss: function() { console.log("Payment closed"); }
-    }
-  };
+            activeHeroIndex = 0;
+            if(masterBanners.length > 1) {
+                heroCarouselTimer = setInterval(() => {
+                    const slides = container.querySelectorAll('.hero-slide');
+                    const indicators = dots.querySelectorAll('button');
+                    slides[activeHeroIndex].classList.remove('active');
+                    indicators[activeHeroIndex].classList.remove('bg-brand-500', 'w-5');
+                    
+                    activeHeroIndex = (activeHeroIndex + 1) % slides.length;
+                    
+                    slides[activeHeroIndex].classList.add('active');
+                    indicators[activeHeroIndex].classList.add('bg-brand-500', 'w-5');
+                }, 5000);
+            }
+        }
 
-  const rzp = new Razorpay(options);
-  rzp.open();
-}
+        // DETAIL FRAME WINDOW INTERACTION LAYER
+        async function openMovieDetailsSequence(movieId) {
+            const movie = masterMovies.find(m => m.id === movieId);
+            if (!movie) return;
 
-// After successful payment
-async function onPaymentSuccess(data, amount, paymentId) {
-  const txnId = paymentId || ("TXN" + Date.now());
-  const now = new Date();
-  const dateStr = now.toLocaleDateString('en-IN', { day:'2-digit', month:'short', year:'numeric' });
-  const timeStr = now.toLocaleTimeString('en-IN', { hour:'2-digit', minute:'2-digit' });
+            document.getElementById("modal-banner").src = movie.bannerUrl;
+            document.getElementById("modal-poster").src = movie.posterUrl;
+            document.getElementById("modal-title").innerText = movie.title;
+            document.getElementById("modal-year").innerText = movie.releaseYear;
+            document.getElementById("modal-genre").innerText = movie.genre;
+            document.getElementById("modal-desc").innerText = movie.description;
 
-  currentData = { ...data, amount, txnId, dateStr, timeStr };
+            const playBtn = document.getElementById("modal-play-btn");
+            playBtn.onclick = () => {
+                toggleDetailsModal(false);
+                executeStreamInstantiation(movie);
+            };
 
-  // Save to Firebase
-  if (db) {
-    try {
-      await db.collection("registrations").add({
-        name: data.name,
-        mobile: data.mobile,
-        branch: data.branch,
-        year: YEAR_LABELS[data.year],
-        amount,
-        txnId,
-        paidAt: firebase.firestore.FieldValue.serverTimestamp(),
-        status: "paid"
-      });
-      // Notify admin via WhatsApp
-      notifyAdmin(data, amount, txnId, dateStr);
-    } catch(e) { console.error("Firebase error:", e); }
-  }
+            const watchlistBtn = document.getElementById("modal-watchlist-btn");
+            if (activeUser) {
+                watchlistBtn.classList.remove("hidden");
+                const docSnap = await getDoc(doc(db, "watchlists", activeUser.uid));
+                const currentIds = (docSnap.exists()) ? (docSnap.data().movieIds || []) : [];
+                
+                if (currentIds.includes(movieId)) {
+                    watchlistBtn.innerHTML = `<i class="fa-solid fa-check text-emerald-500"></i> In Watchlist`;
+                    watchlistBtn.onclick = () => mutateWatchlistAction(movieId, "remove");
+                } else {
+                    watchlistBtn.innerHTML = `<i class="fa-solid fa-plus"></i> Watchlist`;
+                    watchlistBtn.onclick = () => mutateWatchlistAction(movieId, "add");
+                }
+            } else {
+                watchlistBtn.classList.add("hidden");
+            }
 
-  showSuccess();
-}
+            toggleDetailsModal(true);
+        }
 
-// Show success + invoice
-function showSuccess() {
-  document.getElementById('form-card').style.display = 'none';
-  const s = document.getElementById('success-screen');
-  s.style.display = 'block';
+        async function mutateWatchlistAction(movieId, method) {
+            if (!activeUser) return;
+            const docRef = doc(db, "watchlists", activeUser.uid);
+            const docSnap = await getDoc(docRef);
+            let currentIds = (docSnap.exists()) ? (docSnap.data().movieIds || []) : [];
 
-  const { name, mobile, branch, year, amount, txnId, dateStr, timeStr } = currentData;
-  document.getElementById('invoice-box').innerHTML = `
-    <div class="inv-row"><span class="k">Member Name</span><span class="v">${name}</span></div>
-    <div class="inv-row"><span class="k">Mobile</span><span class="v">${mobile}</span></div>
-    <div class="inv-row"><span class="k">Branch</span><span class="v">${branch}</span></div>
-    <div class="inv-row"><span class="k">Year</span><span class="v">${YEAR_LABELS[year]}</span></div>
-    <div class="inv-row"><span class="k">Payment Date</span><span class="v">${dateStr}, ${timeStr}</span></div>
-    <div class="inv-row"><span class="k">Transaction ID</span><span class="v" style="font-size:0.8rem">${txnId}</span></div>
-    <div class="inv-row total"><span class="k">Amount Paid</span><span class="v">₹${amount}</span></div>
-  `;
+            if (method === "add" && !currentIds.includes(movieId)) {
+                currentIds.push(movieId);
+                dispatchToast("Added to internal watchlist.");
+            } else if (method === "remove") {
+                currentIds = currentIds.filter(id => id !== movieId);
+                dispatchToast("Removed from watchlist.");
+            }
 
-  const msg = encodeURIComponent(
-`✅ *Telugu Community – Payment Confirmed!*
-━━━━━━━━━━━━━━━━━━
-👤 *Name:* ${name}
-📱 *Mobile:* ${mobile}
-🏫 *Branch:* ${branch}
-📚 *Year:* ${YEAR_LABELS[year]}
-💰 *Amount Paid:* ₹${amount}
-🗓️ *Date:* ${dateStr} at ${timeStr}
-🔖 *Txn ID:* ${txnId}
-━━━━━━━━━━━━━━━━━━
-Welcome to Telugu Community! 🙏🎉`
-  );
+            await setDoc(docRef, { movieIds: currentIds }, { merge: true });
+            openMovieDetailsSequence(movieId); // Refresh button display state
+        }
 
-  document.getElementById('whatsapp-btn').href =
-    `https://wa.me/${mobile.replace(/\D/,'')}?text=${msg}`;
-}
+        function toggleDetailsModal(show) {
+            const modal = document.getElementById("details-modal");
+            if(show) modal.classList.remove("hidden");
+            else modal.classList.add("hidden");
+        }
 
-// Notify admin on WhatsApp
-function notifyAdmin(data, amount, txnId, dateStr) {
-  const msg = encodeURIComponent(
-`🔔 *New Registration – Telugu Community*
-👤 ${data.name} | ${YEAR_LABELS[data.year]}
-📱 ${data.mobile}
-🏫 ${data.branch}
-💰 ₹${amount} | Txn: ${txnId}
-🗓️ ${dateStr}`
-  );
-  // Open silently (you can also send via Twilio backend if needed)
-  const link = `https://wa.me/${CONFIG.ADMIN_WHATSAPP}?text=${msg}`;
-  window.open(link, '_blank');
-}
+        // CINEMATIC STAGE PLAYBACK MECHANICS
+        function executeStreamInstantiation(movie) {
+            document.getElementById("player-title").innerText = movie.title;
+            const playerNode = document.getElementById("player-view-node");
+            const url = movie.movieUrl;
 
-// Reset form
-function resetForm() {
-  document.getElementById('form-card').style.display = 'block';
-  document.getElementById('success-screen').style.display = 'none';
-  document.getElementById('name').value = '';
-  document.getElementById('mobile').value = '';
-  document.getElementById('branch').value = '';
-  document.getElementById('year').value = '';
-  document.getElementById('amount-display').classList.add('hidden');
-  document.querySelectorAll('.price-pill').forEach(p => p.classList.remove('active'));
-  currentData = {};
-}
-</script>
+            // Cache details inside Client LocalStorage space
+            localStorage.setItem("cineo_resume_node", JSON.stringify({ id: movie.id, timestamp: Date.now() }));
+            hydrateContinueWatchingUI();
+
+            if (url.includes("youtube.com/embed") || url.includes("player.vimeo")) {
+                playerNode.innerHTML = `<iframe src="${url}?autoplay=1" class="w-full h-full max-w-4xl aspect-video" allowfullscreen allow="autoplay"></iframe>`;
+            } else if (url.endsWith(".m3u8")) {
+                playerNode.innerHTML = `
+                    <video id="hls-video" controls autoplay class="w-full h-full max-w-4xl aspect-video bg-zinc-900"></video>
+                    <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"><\/script>
+                `;
+                setTimeout(() => {
+                    const video = document.getElementById('hls-video');
+                    if (Hls.isSupported()) {
+                        const hls = new Hls(); hls.loadSource(url); hls.attachMedia(video);
+                    } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+                        video.src = url;
+                    }
+                }, 200);
+            } else {
+                playerNode.innerHTML = `<video src="${url}" controls autoplay class="w-full h-full max-w-4xl aspect-video"></video>`;
+            }
+
+            document.getElementById("player-modal").classList.remove("hidden");
+        }
+
+        window.terminatePlayerStream = function() {
+            document.getElementById("player-modal").classList.add("hidden");
+            document.getElementById("player-view-node").innerHTML = "";
+        }
+
+        // LOCAL STORAGE CONTINUE WATCHING TRACKS
+        function hydrateContinueWatchingUI() {
+            const parent = document.getElementById("continue-section");
+            const grid = document.getElementById("continue-grid");
+            const cache = localStorage.getItem("cineo_resume_node");
+
+            if (!cache || masterMovies.length === 0) { parent.classList.add("hidden"); return; }
+            const { id } = JSON.parse(cache);
+            const target = masterMovies.find(m => m.id === id);
+
+            if (!target) { parent.classList.add("hidden"); return; }
+
+            parent.classList.remove("hidden");
+            grid.innerHTML = `
+                <div class="bg-white border p-3 rounded-xl flex items-center gap-3 shadow-sm hover:border-brand-400 cursor-pointer" onclick="openMovieDetailsSequence('${target.id}')">
+                    <img src="${target.posterUrl}" class="w-10 h-14 object-cover rounded shadow-inner flex-shrink-0">
+                    <div class="min-w-0 flex-1">
+                        <span class="text-[9px] uppercase font-bold text-amber-600 block"><i class="fa-solid fa-bolt animate-pulse"></i> Resume Playback</span>
+                        <h4 class="text-xs font-bold text-slate-800 truncate">${target.title}</h4>
+                    </div>
+                </div>
+            `;
+        }
+
+        // SYSTEM SEARCH ALGORITHM INLINE INTERLOCK
+        function initSearchEngine() {
+            const input = document.getElementById("search-input");
+            input.oninput = (e) => {
+                const val = e.target.value.toLowerCase().trim();
+                if(!val) { renderShelvesPipeline(); return; }
+
+                const searchMatches = masterMovies.filter(m => m.title.toLowerCase().includes(val) || m.genre.toLowerCase().includes(val));
+                
+                // Overlay shelf targets to render direct search output arrays instead
+                document.getElementById("trending-section").classList.add("hidden");
+                document.getElementById("latest-section").classList.add("hidden");
+                document.getElementById("top-section").classList.remove("hidden");
+                document.querySelector("#top-section h3").innerText = `Search Index Output (${searchMatches.length})`;
+                injectMovieCards(searchMatches, "top-shelf");
+            };
+        }
+
+        // AUTHENTICATION DELEGATE ASSIGNMENT HANDLERS
+        async function executeProfileAuthentication() {
+            try { await signInWithPopup(auth, provider); } catch (e) { dispatchToast("Authorization sequence failure.", "error"); }
+        }
+        async function executeProfileSignout() {
+            try { await signOut(auth); } catch (e) { }
+        }
+
+        function dispatchToast(msg, type = "success") {
+            const box = document.getElementById("toast-container");
+            const node = document.createElement("div");
+            node.className = "p-3 bg-white border text-xs font-bold rounded-xl shadow-lg transition-all duration-300 transform translate-x-6 opacity-0";
+            node.innerText = msg;
+            box.appendChild(node);
+            setTimeout(() => node.classList.remove("translate-x-6", "opacity-0"), 10);
+            setTimeout(() => { node.classList.add("opacity-0"); setTimeout(() => node.remove(), 300); }, 3000);
+        }
+
+        // Global export linkage bindings mapping to custom HTML interface triggers
+        window.toggleDetailsModal = toggleDetailsModal;
+    </script>
 </body>
 </html>
