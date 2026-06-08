@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cineo Backstage - Security & Content Operations</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #f1f5f9; }
+        ::-webkit-scrollbar { width: 4px; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; }
+    </style>
+</head>
+<body class="antialiased text-slate-800">
+
+    <div id="admin-gate-modal" class="fixed inset-0 z-[200] bg-slate-900 flex items-center justify-center p-4">
+        <div class="bg-white w-full max-w-sm rounded-2xl p-6 text-center space-y-4 shadow-2xl">
+            <div class="w-12 h-12 rounded-xl bg-brand-500 bg-blue-600 text-white flex items-center justify-center text-xl mx-auto"><i class="fa-solid fa-shield-halved"></i></div>
+            <div>
+                <h2 class="text-xl font-black text-slate-900">Cineo Operational Gate</h2>
+                <p class="text-xs text-slate-400 mt-0.5">Administrative email validation verification required.</p>
+            </div>
+            <button id="gate-signin-btn" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs py-3 px-4 rounded-xl flex items-center justify-center gap-2 transition-all">
+                <i class="fa-brands fa-google"></i> Sign In with System Admin Profile
+            </button>
+            <p id="gate-error" class="text-xs font-bold text-rose-500 hidden"></p>
+        </div>
+    </div>
+
+    <div id="admin-workspace" class="hidden min-h-screen flex flex-col">
+        <header class="bg-slate-900 text-white px-6 py-4 flex items-center justify-between shadow-sm">
+            <div class="flex items-center gap-3">
+                <span class="text-lg font-black tracking-tight border-r border-slate-700 pr-3">Cineo Dashboard</span>
+                <span class="text-[10px] tracking-wider uppercase font-bold bg-blue-500/20 text-blue-400 px-2 py-0.5 rounded">Terminal Sandbox Live</span>
+            </div>
+            <div class="flex items-center gap-3 text-xs">
+                <span id="admin-profile-name" class="font-bold text-slate-300"></span>
+                <button id="gate-signout-btn" class="bg-white/10 hover:bg-white/20 px-3 py-1.5 rounded-lg font-bold transition-all">Sign Out</button>
+            </div>
+        </header>
+
+        <main class="flex-1 p-6 max-w-7xl w-full mx-auto space-y-6">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div class="bg-white border rounded-xl p-4 flex items-center justify-between shadow-sm">
+                    <div><p class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Total Movies Cataloged</p><h3 id="stat-movies" class="text-2xl font-black text-slate-900 mt-1">0</h3></div>
+                    <div class="text-xl text-blue-500 bg-blue-50 w-10 h-10 rounded-lg flex items-center justify-center"><i class="fa-solid fa-film"></i></div>
+                </div>
+                <div class="bg-white border rounded-xl p-4 flex items-center justify-between shadow-sm">
+                    <div><p class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Registered Core Users</p><h3 id="stat-users" class="text-2xl font-black text-slate-900 mt-1">0</h3></div>
+                    <div class="text-xl text-emerald-500 bg-emerald-50 w-10 h-10 rounded-lg flex items-center justify-center"><i class="fa-solid fa-users"></i></div>
+                </div>
+                <div class="bg-white border rounded-xl p-4 flex items-center justify-between shadow-sm">
+                    <div><p class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Active Promo Banners</p><h3 id="stat-banners" class="text-2xl font-black text-slate-900 mt-1">0</h3></div>
+                    <div class="text-xl text-indigo-500 bg-indigo-50 w-10 h-10 rounded-lg flex items-center justify-center"><i class="fa-solid fa-images"></i></div>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <div class="lg:col-span-1 space-y-6">
+                    <div class="bg-white border rounded-xl p-5 shadow-sm space-y-3">
+                        <h4 class="text-xs uppercase font-extrabold text-slate-400 tracking-wider border-b pb-2"><i class="fa-solid fa-file-video mr-1"></i> Add / Edit Movie Node</h4>
+                        <form id="movie-form" class="space-y-3 text-xs">
+                            <input type="hidden" id="movie-id">
+                            <div class="space-y-1"><label class="font-bold text-slate-600">Movie Title Name</label><input type="text" id="movie-title" required class="w-full border p-2 rounded-lg bg-slate-50 outline-none focus:bg-white"></div>
+                            <div class="grid grid-cols-2 gap-2">
+                                <div class="space-y-1"><label class="font-bold text-slate-600">Release Year</label><input type="number" id="movie-year" required class="w-full border p-2 rounded-lg bg-slate-50 outline-none focus:bg-white"></div>
+                                <div class="space-y-1"><label class="font-bold text-slate-600">Genre</label><input type="text" id="movie-genre" required placeholder="e.g., Action" class="w-full border p-2 rounded-lg bg-slate-50 outline-none focus:bg-white"></div>
+                            </div>
+                            <div class="space-y-1"><label class="font-bold text-slate-600">Poster Image URL</label><input type="url" id="movie-poster" required class="w-full border p-2 rounded-lg bg-slate-50 outline-none focus:bg-white"></div>
+                            <div class="space-y-1"><label class="font-bold text-slate-600">Landscape Banner Image URL</label><input type="url" id="movie-banner" required class="w-full border p-2 rounded-lg bg-slate-50 outline-none focus:bg-white"></div>
+                            <div class="space-y-1"><label class="font-bold text-slate-600">Embedded Video Source stream URL</label><input type="url" id="movie-url" required class="w-full border p-2 rounded-lg bg-slate-50 outline-none focus:bg-white"></div>
+                            <div class="space-y-1"><label class="font-bold text-slate-600">Narrative Plot Description</label><textarea id="movie-desc" rows="2" required class="w-full border p-2 rounded-lg bg-slate-50 outline-none focus:bg-white resize-none"></textarea></div>
+                            <div class="flex items-center gap-4 bg-slate-50 p-2.5 rounded-lg border">
+                                <label class="flex items-center gap-1.5 font-bold text-slate-600 cursor-pointer"><input type="checkbox" id="movie-is-trending" class="rounded text-blue-600"><span>Trending Now</span></label>
+                                <label class="flex items-center gap-1.5 font-bold text-slate-600 cursor-pointer"><input type="checkbox" id="movie-is-latest" class="rounded text-blue-600"><span>Latest Release</span></label>
+                            </div>
+                            <div class="flex gap-2 pt-1">
+                                <button type="submit" class="flex-1 bg-blue-600 text-white font-bold py-2.5 rounded-lg">Commit Movie Node</button>
+                                <button type="button" onclick="clearMovieForm()" class="bg-slate-100 text-slate-600 font-bold px-3 rounded-lg">Clear</button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <div class="bg-white border rounded-xl p-5 shadow-sm space-y-3">
+                        <h4 class="text-xs uppercase font-extrabold text-slate-400 tracking-wider border-b pb-2"><i class="fa-solid fa-images mr-1"></i> Add Promo Banner</h4>
+                        <form id="banner-form" class="space-y-3 text-xs">
+                            <input type="hidden" id="banner-id">
+                            <div class="space-y-1"><label class="font-bold text-slate-600">Promotion Title Heading</label><input type="text" id="banner-title" required class="w-full border p-2 rounded-lg bg-slate-50 outline-none"></div>
+                            <div class="space-y-1"><label class="font-bold text-slate-600">Landscape Banner Image URL</label><input type="url" id="banner-img-url" required class="w-full border p-2 rounded-lg bg-slate-50 outline-none"></div>
+                            <div class="space-y-1"><label class="font-bold text-slate-600">Short Sub-text Tagline Description</label><textarea id="banner-desc" rows="2" required class="w-full border p-2 rounded-lg bg-slate-50 outline-none resize-none"></textarea></div>
+                            <div class="flex gap-2 pt-1">
+                                <button type="submit" class="flex-1 bg-indigo-600 text-white font-bold py-2.5 rounded-lg">Commit Banner Node</button>
+                                <button type="button" onclick="clearBannerForm()" class="bg-slate-100 text-slate-600 font-bold px-3 rounded-lg">Clear</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <div class="lg:col-span-2 space-y-6">
+                    <div class="bg-white border rounded-xl p-5 shadow-sm space-y-3">
+                        <h4 class="text-xs uppercase font-extrabold text-slate-400 tracking-wider border-b pb-1">Master Inventory Movies List</h4>
+                        <div id="inventory-movies-box" class="space-y-2 max-h-[450px] overflow-y-auto pr-1">
+                            <p class="text-xs text-slate-400 italic">No assets mapped.</p>
+                        </div>
+                    </div>
+
+                    <div class="bg-white border rounded-xl p-5 shadow-sm space-y-3">
+                        <h4 class="text-xs uppercase font-extrabold text-slate-400 tracking-wider border-b pb-1">Active Carousel Banners Inventory</h4>
+                        <div id="inventory-banners-box" class="space-y-2 max-h-[300px] overflow-y-auto pr-1">
+                            <p class="text-xs text-slate-400 italic">No promo banners mapped.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getAuth, signInWithPopup, GoogleAuthProvider, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+        import { getFirestore, doc, setDoc, deleteDoc, collection, onSnapshot, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+        // IMPORTANT: Use your explicit matching Firebase infrastructure configuration block
+        const firebaseConfig = {
+            apiKey: "YOUR_API_KEY",
+            authDomain: "YOUR_AUTH_DOMAIN",
+            projectId: "YOUR_PROJECT_ID",
+            storageBucket: "YOUR_STORAGE_BUCKET",
+            messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
+            appId: "YOUR_APP_ID"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+        const provider = new GoogleAuthProvider();
+
+        document.getElementById("gate-signin-btn").onclick = executeAdminVerificationChallenge;
+        document.getElementById("gate-signout-btn").onclick = () => signOut(auth);
+
+        document.getElementById("movie-form").onsubmit = submitMovieForm;
+        document.getElementById("banner-form").onsubmit = submitBannerForm;
+
+        // AUTH SECURITY WATCHER
+        onAuthStateChanged(auth, async (user) => {
+            const gate = document.getElementById("admin-gate-modal");
+            const workspace = document.getElementById("admin-workspace");
+            const errLog = document.getElementById("gate-error");
+
+            if (user) {
+                // Query absolute authorization verification node in Firestore database space
+                const adminCheck = await getDoc(doc(db, "admins", user.email.toLowerCase().trim()));
+                if (adminCheck.exists()) {
+                    gate.classList.add("hidden");
+                    workspace.classList.remove("hidden");
+                    document.getElementById("admin-profile-name").innerText = user.displayName;
+                    initDashboardMetricsPipeline();
+                } else {
+                    errLog.innerText = "Access Denied: Email configuration unauthorized.";
+                    errLog.classList.remove("hidden");
+                    await signOut(auth);
+                }
+            } else {
+                gate.classList.remove("hidden");
+                workspace.classList.add("hidden");
+            }
+        });
+
+        async function executeAdminVerificationChallenge() {
+            document.getElementById("gate-error").classList.add("hidden");
+            try { await signInWithPopup(auth, provider); } catch(e) { }
+        }
+
+        // STATS COUNTER REAL-TIME HANDLERS
+        function initDashboardMetricsPipeline() {
+            // Monitor Movies Collection
+            onSnapshot(collection(db, "movies"), (snap) => {
+                const movies = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+                document.getElementById("stat-movies").innerText = movies.length;
+                renderMoviesInventory(movies);
+            });
+
+            // Monitor Users Collection
+            onSnapshot(collection(db, "users"), (snap) => {
+                document.getElementById("stat-users").innerText = snap.size;
+            });
+
+            // Monitor Banners Collection
+            onSnapshot(collection(db, "banners"), (snap) => {
+                const banners = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+                document.getElementById("stat-banners").innerText = banners.length;
+                renderBannersInventory(banners);
+            });
+        }
+
+        // MOVIE DATA MUTATION DISPATCHERS
+        async function submitMovieForm(e) {
+            e.preventDefault();
+            const id = document.getElementById("movie-id").value || `movie_${Date.now()}`;
+            
+            await setDoc(doc(db, "movies", id), {
+                title: document.getElementById("movie-title").value.trim(),
+                releaseYear: parseInt(document.getElementById("movie-year").value),
+                genre: document.getElementById("movie-genre").value.trim(),
+                posterUrl: document.getElementById("movie-poster").value.trim(),
+                bannerUrl: document.getElementById("movie-banner").value.trim(),
+                movieUrl: document.getElementById("movie-url").value.trim(),
+                description: document.getElementById("movie-desc").value.trim(),
+                trending: document.getElementById("movie-is-trending").checked,
+                latestRelease: document.getElementById("movie-is-latest").checked
+            }, { merge: true });
+
+            clearMovieForm();
+        }
+
+        function renderMoviesInventory(arr) {
+            const box = document.getElementById("inventory-movies-box");
+            if (arr.length === 0) { box.innerHTML = `<p class="text-xs text-slate-400 italic">Inventory is completely clear.</p>`; return; }
+            
+            box.innerHTML = arr.map(m => `
+                <div class="bg-slate-50 border p-3 rounded-lg flex items-center justify-between text-xs shadow-inner">
+                    <div class="min-w-0 flex-1">
+                        <p class="font-bold text-slate-900 truncate">${m.title} <span class="text-slate-400 font-medium">(${m.releaseYear})</span></p>
+                        <p class="text-[10px] text-slate-400 font-semibold truncate">Genre: ${m.genre} | Trending: ${m.trending} | Latest: ${m.latestRelease}</p>
+                    </div>
+                    <div class="flex gap-1.5 ml-4">
+                        <button class="edit-m-btn bg-blue-50 text-blue-600 px-2 py-1 rounded font-bold" data-id="${m.id}">Edit</button>
+                        <button class="del-m-btn bg-rose-50 text-rose-600 px-2 py-1 rounded font-bold" data-id="${m.id}">Delete</button>
+                    </div>
+                </div>
+            `).join('');
+
+            box.querySelectorAll(".edit-m-btn").forEach(btn => btn.onclick = () => populateMovieFormFields(btn.dataset.id, arr));
+            box.querySelectorAll(".del-m-btn").forEach(btn => btn.onclick = () => deleteMovieAssetRecord(btn.dataset.id));
+        }
+
+        function populateMovieFormFields(id, arr) {
+            const m = arr.find(item => item.id === id);
+            if (!m) return;
+            document.getElementById("movie-id").value = m.id;
+            document.getElementById("movie-title").value = m.title;
+            document.getElementById("movie-year").value = m.releaseYear;
+            document.getElementById("movie-genre").value = m.genre;
+            document.getElementById("movie-poster").value = m.posterUrl;
+            document.getElementById("movie-banner").value = m.bannerUrl;
+            document.getElementById("movie-url").value = m.movieUrl;
+            document.getElementById("movie-desc").value = m.description;
+            document.getElementById("movie-is-trending").checked = (m.trending === true || m.trending === "true");
+            document.getElementById("movie-is-latest").checked = (m.latestRelease === true || m.latestRelease === "true");
+        }
+
+        async function deleteMovieAssetRecord(id) {
+            if(confirm("Purge movie configuration record from cloud database instance?")) {
+                await deleteDoc(doc(db, "movies", id));
+            }
+        }
+
+        window.clearMovieForm = function() {
+            document.getElementById("movie-form").reset();
+            document.getElementById("movie-id").value = "";
+        }
+
+        // BANNER ASSET MUTATION HANDLERS
+        async function submitBannerForm(e) {
+            e.preventDefault();
+            const id = document.getElementById("banner-id").value || `banner_${Date.now()}`;
+
+            await setDoc(doc(db, "banners", id), {
+                title: document.getElementById("banner-title").value.trim(),
+                bannerImageUrl: document.getElementById("banner-img-url").value.trim(),
+                description: document.getElementById("banner-desc").value.trim()
+            }, { merge: true });
+
+            clearBannerForm();
+        }
+
+        function renderBannersInventory(arr) {
+            const box = document.getElementById("inventory-banners-box");
+            if (arr.length === 0) { box.innerHTML = `<p class="text-xs text-slate-400 italic">No banners populated.</p>`; return; }
+
+            box.innerHTML = arr.map(b => `
+                <div class="bg-slate-50 border p-3 rounded-lg flex items-center justify-between text-xs shadow-inner">
+                    <div class="min-w-0 flex-1"><p class="font-bold text-slate-900 truncate">${b.title}</p></div>
+                    <div class="flex gap-1.5 ml-4">
+                        <button class="edit-b-btn bg-indigo-50 text-indigo-600 px-2 py-1 rounded font-bold" data-id="${b.id}">Edit</button>
+                        <button class="del-b-btn bg-rose-50 text-rose-600 px-2 py-1 rounded font-bold" data-id="${b.id}">Delete</button>
+                    </div>
+                </div>
+            `).join('');
+
+            box.querySelectorAll(".edit-b-btn").forEach(btn => btn.onclick = () => populateBannerFormFields(btn.dataset.id, arr));
+            box.querySelectorAll(".del-b-btn").forEach(btn => btn.onclick = () => deleteBannerAssetRecord(btn.dataset.id));
+        }
+
+        function populateBannerFormFields(id, arr) {
+            const b = arr.find(item => item.id === id);
+            if(!b) return;
+            document.getElementById("banner-id").value = b.id;
+            document.getElementById("banner-title").value = b.title;
+            document.getElementById("banner-img-url").value = b.bannerImageUrl;
+            document.getElementById("banner-desc").value = b.description;
+        }
+
+        async function deleteBannerAssetRecord(id) {
+            if(confirm("Drop promotional banner image reference?")) {
+                await deleteDoc(doc(db, "banners", id));
+            }
+        }
+
+        window.clearBannerForm = function() {
+            document.getElementById("banner-form").reset();
+            document.getElementById("banner-id").value = "";
+        }
+    </script>
+</body>
+</html>
